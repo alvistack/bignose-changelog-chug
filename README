@@ -1,0 +1,101 @@
+changelog-chug is a parser for project Change Log documents.
+
+changelog-chug
+##############
+
+Example
+=======
+
+Generate a JSON document describing versions from the reStructuredText
+formatted ChangeLog::
+
+    $ chug --output-format JSON --input-format reST ChangeLog > versions.json
+    $ cat versions.json
+    {
+        "source_file": "ChangeLog",
+        "versions": [
+            "1.0.1", {
+                "version": "1.0.1",
+                "version_info": {
+                    "major": "1",
+                    "minor": "0",
+                    "patch": "1",
+                    "prerelease": null,
+                    "build": null
+                },
+                "release_date": "2020-01-10",
+                "entry_text": "…"
+            },
+            "1.0", {
+                "version": "1.0",
+                "version_info": {
+                    "major": "1",
+                    "minor": "0",
+                    "patch": null,
+                    "prerelease": null,
+                    "build": null
+                },
+                "release_date": "2020-01-10",
+                "entry_text": "…"
+            },
+            "0.2": {
+                "version": "0.2",
+                "version_info": {
+                    "major": "0",
+                    "minor": "2",
+                    "patch": null,
+                    "prerelease": null,
+                    "build": null
+                },
+                "release_date": "2019-07-04",
+                "entry_text": "…"
+            },
+            "0.2-alpha1": {
+                "version": "0.2-alpha1",
+                "version_info": {
+                    "major": "0",
+                    "minor": "2",
+                    "patch": null,
+                    "prerelease": "alpha1",
+                    "build": null
+                },
+                "release_date": "2019-07-04",
+                "entry_text": "…"
+            },
+            "0.1": {
+                "version": "0.1",
+                "version_info": {
+                    "major": "0",
+                    "minor": "1",
+                    "patch": null,
+                    "prerelease": null,
+                    "build": null
+                },
+                "release_date": "2019-05-16",
+                "entry_text": "…"
+            }
+        ]
+    }
+
+
+Copying
+=======
+
+changelog-chug is free software. See the file `COPYING`_ for details.
+
+..  _COPYING: COPYING
+
+
+..
+    This document is written using `reStructuredText`_ markup, and can
+    be rendered with `Docutils`_ to other formats.
+
+    ..  _Docutils: http://docutils.sourceforge.net/
+    ..  _reStructuredText: http://docutils.sourceforge.net/rst.html
+
+..
+    Local variables:
+    coding: utf-8
+    mode: rst
+    End:
+    vim: fileencoding=utf-8 filetype=rst :
