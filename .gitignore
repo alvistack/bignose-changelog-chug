@@ -1,0 +1,31 @@
+# .gitignore
+# Filename patterns to ignore for Git.
+# Manual page: ‘git-ignore(1)’.
+
+# Editor artifacts.
+*~
+\#.*\#
+
+# Development artifacts.
+TAGS
+
+# Build artifacts.
+__pycache__/
+*.py[cod]
+/build/
+/dist/
+/.eggs/
+*.egg-info/
+
+# Test artifacts.
+/.coverage
+/htmlcov/
+/.tox/
+
+
+# Local variables:
+# coding: utf-8
+# mode: gitignore
+# mode: conf
+# End:
+# vim: fileencoding=utf-8 filetype=conf :
