@@ -1,0 +1,31 @@
+Copying this work
+#################
+
+changelog-chug is `free software`_; you are free to
+redistribute it and/or modify it under specific conditions.
+
+..  _free software: https://www.gnu.org/philosophy/free-sw.html
+
+
+Software
+========
+
+Copyright © 2008–2023 Ben Finney <ben+python@benfinney.id.au>
+
+This is free software: you may copy, modify, and/or redistribute this
+work under the terms of the GNU Affero General Public License as
+published by the Free Software Foundation; version 3 of that license
+or any later version.
+
+No warranty expressed or implied. See the file `LICENSE.AGPL-3`_ for
+details, or online at `<https://www.gnu.org/licenses/agpl-3.0.html>`_.
+
+..  _LICENSE.AGPL-3: LICENSE.AGPL-3
+
+
+..
+    Local variables:
+    coding: utf-8
+    mode: rst
+    End:
+    vim: fileencoding=utf-8 filetype=rst :
