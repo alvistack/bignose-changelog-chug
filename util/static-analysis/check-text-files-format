@@ -1,0 +1,124 @@
+#! /usr/bin/env bash
+# util/static-analysis/check-text-files-format
+# Check the style of text lines in files in this code base.
+
+set -o errexit
+set -o pipefail
+
+
+function git_list_text_files_grep_match () {
+    grep_pattern="$1"
+    git ls-files -z \
+        | xargs --null \
+              grep \
+              $GREP_OPTS \
+              --binary-files without-match \
+              --files-with-matches \
+              --extended-regexp \
+              "$grep_pattern"
+}
+
+
+cd "$(git root)"/
+
+printf "Check: %s\n" \
+    "Verify that every text file is encoded using UTF-8." \
+    >&2
+if ( \
+    GREP_OPTS="--null" git_list_text_files_grep_match '' \
+        | xargs --null file --mime \
+        | grep --invert-match 'charset=\(binary\|us-ascii\|utf-8\)'
+) ; then
+    printf "FAILED: %s\n" \
+        "One or more text files encoded different from UTF-8." \
+        >&2
+    /bin/false
+else
+    printf "%s\n" "passed"
+fi
+
+printf "Check: %s\n" \
+    "Verify that no text file has incorrect CR+LF line terminators." \
+    >&2
+if ( \
+    GREP_OPTS="--null" git_list_text_files_grep_match '' \
+        | xargs --null file \
+        | grep 'with CRLF line terminators'
+) ; then
+    printf "FAILED: %s\n" \
+        "One or more text files with CR+LF line terminators." \
+        >&2
+    /bin/false
+else
+    printf "%s\n" "passed"
+fi
+
+printf "Check: %s\n" \
+    "Verify that every text file has a final line break." \
+    >&2
+if ( \
+    GREP_OPTS="--null" git_list_text_files_grep_match '' \
+        | while IFS= read -r -d $'\0' f ; do
+            printf '%s: ' "$f"
+            if test "$(tail --bytes 1 "$f")" ; then
+                printf "does not end with line break\n"
+            else
+                printf "ends with line break\n"
+            fi
+        done | grep 'does not end with line break'
+) ; then
+    printf "FAILED: %s\n" \
+        "One or more text files missing final line break." \
+        >&2
+    /bin/false
+else
+    printf "%s\n" "passed"
+fi
+
+printf "Check: %s\n" \
+    "Verify that no text file has any trailing blank lines." \
+    >&2
+if ( \
+    GREP_OPTS="--null" git_list_text_files_grep_match '' \
+        | while IFS= read -r -d $'\0' f ; do
+            printf '%s: ' "$f"
+            tac "$f" \
+                | sed --quiet $'/^[ \t]*$/!q; p' \
+                | wc --chars
+        done | grep --invert-match ': 0'
+) ; then
+    printf "FAILED: %s\n" \
+        "One or more text files with trailing blank lines." \
+        >&2
+    /bin/false
+else
+    printf "%s\n" "passed"
+fi
+
+printf "Check: %s\n" \
+    "Verify that no text line has any trailing white space." \
+    >&2
+if ( \
+    git_list_text_files_grep_match '[[:blank:]]+$'
+) ; then
+    printf "FAILED: %s\n" \
+        "One or more text lines with trailing white space." \
+        >&2
+    /bin/false
+else
+    printf "%s\n" "passed"
+fi
+
+printf "Check: %s\n" \
+    "Verify that no text file contains U+0009 TAB." \
+    >&2
+if ( \
+    git_list_text_files_grep_match $'\t'
+) ; then
+    printf "FAILED: %s\n" \
+        "One or more text files contain U+0009 TAB character." \
+        >&2
+    /bin/false
+else
+    printf "%s\n" "passed"
+fi
