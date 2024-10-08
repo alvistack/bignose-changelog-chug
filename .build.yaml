@@ -1,0 +1,16 @@
+# .build.yaml
+# Sourcehut build manifest for this code base.
+# Documentation: <URL:https://man.sr.ht/builds.sr.ht/manifest.md>.
+---
+image: debian/bookworm
+packages:
+  - file
+  - git-extras
+  - make
+environment:
+  REPO_NAME: changelog-chug
+sources:
+  - https://git.sr.ht/~bignose/changelog-chug
+tasks:
+  - static-analysis: |
+      make --directory "$REPO_NAME"/ static-analysis
