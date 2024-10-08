@@ -12,6 +12,7 @@
     """
 
 import inspect
+import pydoc
 
 
 def docstring_from_object(object):
@@ -22,6 +23,24 @@ def docstring_from_object(object):
         """
     docstring = inspect.getdoc(object)
     return docstring
+
+
+def synopsis_and_description_from_docstring(docstring):
+    """ Parse one-line synopsis and long description, from `docstring`.
+
+        :param docstring: The documentation string (“docstring”, text) to
+            parse.
+        :return: A 2-tuple (`synopsis`, `long_description`) of the values
+            parsed from `docstring`.
+
+        The `docstring` is expected to be of the form described in :PEP:`257`:
+
+        > Multi-line docstrings consist of a summary line just like a one-line
+        > docstring, followed by a blank line, followed by a more elaborate
+        > description.
+        """
+    (synopsis, long_description) = pydoc.splitdoc(docstring)
+    return (synopsis, long_description)
 
 
 # Copyright © 2008–2024 Ben Finney <ben+python@benfinney.id.au>
