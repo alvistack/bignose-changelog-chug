@@ -37,6 +37,9 @@ insert_final_newline = true
 [{Makefile,*.mk}]
 indent_style = tab
 
+[*.yaml]
+indent_size = 2
+
 
 # Local variables:
 # coding: utf-8
