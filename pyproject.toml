@@ -15,6 +15,7 @@ readme = { file = "README", content-type = "text/x-rst" }
 
 # Names of fields that must be dynamically computed by the build system.
 dynamic = [
+    "description",
     "version",
     ]
 
