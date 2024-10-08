@@ -7,6 +7,10 @@
 
 """ Parsers for various input formats of Change Log document. """
 
+import collections
+
+from .model import rfc822_person_regex
+
 
 class InvalidFormatError(ValueError):
     """ Raised when the document is not a valid ‘ChangeLog’ document. """
@@ -35,6 +39,33 @@ class InvalidFormatError(ValueError):
         )
 
         return text
+
+
+ParsedPerson = collections.namedtuple('ParsedPerson', ['name', 'email'])
+""" A person's contact details: name, email address. """
+
+
+def parse_person_field(value):
+    """ Parse a person field into name and email address.
+
+        :param value: The text value specifying a person.
+        :return: A `ParsedPerson` instance for the person's details.
+
+        If the `value` does not match a standard person with email
+        address, the return value has `email` item set to ``None``.
+        """
+    result = ParsedPerson(name=None, email=None)
+
+    match = rfc822_person_regex.match(value)
+    if len(value):
+        if match is not None:
+            result = ParsedPerson(
+                name=match.group('name'),
+                email=match.group('email'))
+        else:
+            result = ParsedPerson(name=value, email=None)
+
+    return result
 
 
 # Copyright © 2008–2024 Ben Finney <ben+python@benfinney.id.au>
