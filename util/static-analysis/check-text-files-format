@@ -113,7 +113,8 @@ printf "Check: %s\n" \
     "Verify that no text file contains U+0009 TAB." \
     >&2
 if ( \
-    git_list_text_files_grep_match $'\t'
+    GREP_OPTS="--exclude Makefile" \
+        git_list_text_files_grep_match $'\t'
 ) ; then
     printf "FAILED: %s\n" \
         "One or more text files contain U+0009 TAB character." \
