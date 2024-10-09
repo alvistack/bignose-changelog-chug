@@ -44,6 +44,10 @@ test = [
     # Documentation: <URL:https://pypi.org/project/testscenarios/>.
     "testscenarios >= 0.4",
 
+    # Code coverage measurement.
+    # Documentation: <URL:https://coverage.readthedocs.io/>.
+    "coverage",
+
     ]
 
 [build-system]
@@ -64,6 +68,14 @@ build-backend = "setuptools.build_meta"
 
 # Text file containing the distribution version value.
 version = { file = "VERSION" }
+
+[tool.coverage.run]
+
+# Source (packages or directories) to measure during execution.
+source = [
+    "src",
+    "util",
+    ]
 
 
 # Local-variables:

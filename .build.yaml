@@ -19,7 +19,10 @@ tasks:
       python3 -m venv "$VIRTUAL_ENV"
       source "$VIRTUAL_ENV"/bin/activate
       cd "$REPO_NAME"/
-      python3 -m pip install .[static-analysis]
+      python3 -m pip install --editable .[test]
   - static-analysis: |
       source "$VIRTUAL_ENV"/bin/activate
       make --directory "$REPO_NAME"/ static-analysis
+  - test: |
+      source "$VIRTUAL_ENV"/bin/activate
+      make --directory "$REPO_NAME"/ clean test-coverage
