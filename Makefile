@@ -12,6 +12,9 @@
 SHELL = /bin/bash
 PATH = /usr/bin:/bin
 
+# Variables that will be extended by module include files.
+GENERATED_FILES :=
+
 # Directories with semantic meaning.
 STATIC_ANALYSIS_UTIL_DIR := $(CURDIR)/util/static-analysis
 
@@ -26,6 +29,11 @@ all:
 
 # Include the make data for each module.
 include $(patsubst %,%/module.mk,${MODULES})
+
+
+.PHONY: clean
+clean:
+	$(RM) -r ${GENERATED_FILES}
 
 
 # Copyright © 2008–2024 Ben Finney <ben+python@benfinney.id.au>
