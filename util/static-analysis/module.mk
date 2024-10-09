@@ -9,6 +9,14 @@
 
 MAKE_STATIC_ANALYSIS_MODULE_DIR := $(CURDIR)/util/static-analysis
 
+TEST_PIP_CHECK_OPTS ?= --no-input --require-virtualenv
+
+# Minimum complexity (integer) threshold for emitting a report.
+TEST_PYMCCABE_MIN ?= 4
+TEST_PYMCCABE_OPTS ?= --min ${TEST_PYMCCABE_MIN}
+
+TEST_PYCODESTYLE_OPTS ?=
+
 
 .PHONY: static-analysis
 static-analysis: static-text-check
@@ -16,6 +24,22 @@ static-analysis: static-text-check
 .PHONY: static-text-check
 static-text-check:
 	${MAKE_STATIC_ANALYSIS_MODULE_DIR}/check-text-files-format
+
+
+.PHONY: test-pymccabe
+test-pymccabe:
+	for f in ${CODE_MODULES} ; do \
+		printf "McCabe complexity measurement ‘%s’:\n" "$$f" ; \
+		$(PYTHON) -m mccabe ${TEST_PYMCCABE_OPTS} "$$f" ; \
+	done ; \
+	printf "McCabe complexity measurements done.\n" ; \
+
+.PHONY: test-pycodestyle
+test-pycodestyle:
+	$(PYTHON) -m pycodestyle ${TEST_PYCODESTYLE_OPTS} \
+		${CODE_PACKAGE_DIRS}
+
+static-analysis: test-pymccabe test-pycodestyle
 
 
 # Copyright © 2008–2024 Ben Finney <ben+python@benfinney.id.au>

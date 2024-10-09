@@ -1,39 +1,20 @@
-#! /usr/bin/make -f
-#
-# Makefile
+# src/module.mk
 # Part of ‘changelog-chug’, a parser for project Change Log documents.
 #
 # This is free software, and you are welcome to redistribute it under
 # certain conditions; see the end of this file for copyright
 # information, grant of license, and disclaimer of warranty.
 
-# Makefile for ‘changelog-chug’ project.
+# Makefile module for ‘changelog-chug’ Python distribution.
 
-SHELL = /bin/bash
+MAKE_SRC_MODULE_DIR ::= $(CURDIR)/src
 
-# Variables that will be extended by module include files.
-GENERATED_FILES :=
+PYTHON := python3
 
-# Directories with semantic meaning.
-PACKAGE_SOURCE_DIR := $(CURDIR)/src
-STATIC_ANALYSIS_UTIL_DIR := $(CURDIR)/util/static-analysis
+CODE_PACKAGE_DIRS += ${MAKE_SRC_MODULE_DIR}
+CODE_MODULES += $(shell find "${MAKE_SRC_MODULE_DIR}"/ -type f -name '*.py')
 
-# List of modules (directories) that comprise our ‘make’ project.
-MODULES := ${PACKAGE_SOURCE_DIR}
-MODULES += ${STATIC_ANALYSIS_UTIL_DIR}
-
-
-# Establish the default goal.
-.PHONY: all
-all:
-
-# Include the make data for each module.
-include $(patsubst %,%/module.mk,${MODULES})
-
-
-.PHONY: clean
-clean:
-	$(RM) -r ${GENERATED_FILES}
+GENERATED_FILES += ${MAKE_SRC_MODULE_DIR}/*.egg-info
 
 
 # Copyright © 2008–2024 Ben Finney <ben+python@benfinney.id.au>

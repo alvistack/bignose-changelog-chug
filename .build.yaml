@@ -7,10 +7,19 @@ packages:
   - file
   - git-extras
   - make
+  - python3-pip
+  - python3-venv
 environment:
+  VIRTUAL_ENV: venv
   REPO_NAME: changelog-chug
 sources:
   - https://git.sr.ht/~bignose/changelog-chug
 tasks:
+  - setup: |
+      python3 -m venv "$VIRTUAL_ENV"
+      source "$VIRTUAL_ENV"/bin/activate
+      cd "$REPO_NAME"/
+      python3 -m pip install .[static-analysis]
   - static-analysis: |
+      source "$VIRTUAL_ENV"/bin/activate
       make --directory "$REPO_NAME"/ static-analysis

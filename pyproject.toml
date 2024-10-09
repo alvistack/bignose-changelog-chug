@@ -18,6 +18,20 @@ dynamic = [
     "version",
     ]
 
+[project.optional-dependencies]
+
+static-analysis = [
+
+    # McCabe code complexity measurement tool.
+    # Documentation: <URL:https://github.com/pycqa/mccabe>.
+    "mccabe ~= 0.7",
+
+    # Static code checker for Python style recommendations.
+    # Documentation: <URL:https://pycodestyle.pycqa.org/>.
+    "pycodestyle ~= 2.12",
+
+    ]
+
 [build-system]
 
 # Minimum requirements for the build system.
