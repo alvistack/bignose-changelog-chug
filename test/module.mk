@@ -1,41 +1,26 @@
-#! /usr/bin/make -f
-#
-# Makefile
+# test/module.mk
 # Part of ‘changelog-chug’, a parser for project Change Log documents.
 #
 # This is free software, and you are welcome to redistribute it under
 # certain conditions; see the end of this file for copyright
 # information, grant of license, and disclaimer of warranty.
 
-# Makefile for ‘changelog-chug’ project.
+# Makefile rules for test suite.
 
-SHELL = /bin/bash
+MAKE_TEST_MODULE_DIR := $(CURDIR)/test
 
-# Variables that will be extended by module include files.
-GENERATED_FILES :=
+TEST_MODULES += $(shell find ${MAKE_TEST_MODULE_DIR}/ -name 'test_*.py')
+CODE_PACKAGE_DIRS += ${MAKE_TEST_MODULE_DIR}
 
-# Directories with semantic meaning.
-PACKAGE_SOURCE_DIR := $(CURDIR)/src
-STATIC_ANALYSIS_UTIL_DIR := $(CURDIR)/util/static-analysis
-TEST_SUITE_DIR := $(CURDIR)/test
-
-# List of modules (directories) that comprise our ‘make’ project.
-MODULES := ${PACKAGE_SOURCE_DIR}
-MODULES += ${STATIC_ANALYSIS_UTIL_DIR}
-MODULES += ${TEST_SUITE_DIR}
+TEST_UNITTEST_OPTS ?=
 
 
-# Establish the default goal.
-.PHONY: all
-all:
+.PHONY: test
+test: test-unittest
 
-# Include the make data for each module.
-include $(patsubst %,%/module.mk,${MODULES})
-
-
-.PHONY: clean
-clean:
-	$(RM) -r ${GENERATED_FILES}
+.PHONY: test-unittest
+test-unittest:
+	$(PYTHON) -m unittest ${TEST_UNITTEST_OPTS}
 
 
 # Copyright © 2008–2024 Ben Finney <ben+python@benfinney.id.au>

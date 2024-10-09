@@ -32,6 +32,20 @@ static-analysis = [
 
     ]
 
+test = [
+
+    "changelog-chug[static-analysis]",
+
+    # Extensions to the Python ‘unittest’ framework.
+    # Documentation: <URL:https://testtools.readthedocs.org/>.
+    "testtools",
+
+    # Data-driven test scenarios for ‘unittest’.
+    # Documentation: <URL:https://pypi.org/project/testscenarios/>.
+    "testscenarios >= 0.4",
+
+    ]
+
 [build-system]
 
 # Minimum requirements for the build system.
