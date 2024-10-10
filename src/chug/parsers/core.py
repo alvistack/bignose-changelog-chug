@@ -1,15 +1,15 @@
-# src/chug/parsers.py
+# src/chug/parsers/core.py
 # Part of ‘changelog-chug’, a parser for project Change Log documents.
 #
 # This is free software, and you are welcome to redistribute it under
 # certain conditions; see the end of this file for copyright
 # information, grant of license, and disclaimer of warranty.
 
-""" Parsers for various input formats of Change Log document. """
+""" Core functionality for document parsers. """
 
 import collections
 
-from .model import rfc822_person_regex
+from ..model import rfc822_person_regex
 
 
 class InvalidFormatError(ValueError):
