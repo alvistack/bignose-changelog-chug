@@ -18,16 +18,18 @@ GENERATED_FILES :=
 PACKAGE_SOURCE_DIR := $(CURDIR)/src
 STATIC_ANALYSIS_UTIL_DIR := $(CURDIR)/util/static-analysis
 TEST_SUITE_DIR := $(CURDIR)/test
+PACKAGING_UTIL_DIR := $(CURDIR)/util/packaging
 
 # List of modules (directories) that comprise our ‘make’ project.
 MODULES := ${PACKAGE_SOURCE_DIR}
 MODULES += ${STATIC_ANALYSIS_UTIL_DIR}
 MODULES += ${TEST_SUITE_DIR}
+MODULES += ${PACKAGING_UTIL_DIR}
 
 
 # Establish the default goal.
 .PHONY: all
-all:
+all: clean build
 
 # Include the make data for each module.
 include $(patsubst %,%/module.mk,${MODULES})
@@ -40,6 +42,10 @@ clean:
 
 .PHONY: check
 check:
+
+
+.PHONY: build
+build:
 
 
 # Copyright © 2008–2024 Ben Finney <ben+python@benfinney.id.au>

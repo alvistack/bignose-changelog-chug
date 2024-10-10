@@ -97,6 +97,20 @@ devel = [
 
     ]
 
+build = [
+
+    "changelog-chug[devel]",
+
+    # Reference implementation of Python wheel packaging standard (PEP 427).
+    # Documentation: <URL:https://wheel.readthedocs.io/>.
+    "wheel",
+
+    # A simple, correct (defined by PEP 517) Python build frontend.
+    # Documentation: <URL:https://build.pypa.io/>.
+    "build",
+
+    ]
+
 [project.urls]
 "Home Page" = "https://git.sr.ht/~bignose/changelog-chug"
 "Change Log" = """

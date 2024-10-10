@@ -19,10 +19,13 @@ tasks:
       python3 -m venv "$VIRTUAL_ENV"
       source "$VIRTUAL_ENV"/bin/activate
       cd "$REPO_NAME"/
-      python3 -m pip install --editable .[test]
+      python3 -m pip install --editable .[test,build]
   - check: |
       source "$VIRTUAL_ENV"/bin/activate
       make --directory "$REPO_NAME"/ check
   - test: |
       source "$VIRTUAL_ENV"/bin/activate
       make --directory "$REPO_NAME"/ clean test-coverage
+  - build: |
+      source "$VIRTUAL_ENV"/bin/activate
+      make --directory "$REPO_NAME"/ clean build
