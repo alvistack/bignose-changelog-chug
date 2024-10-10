@@ -17,6 +17,8 @@ TEST_PYMCCABE_OPTS ?= --min ${TEST_PYMCCABE_MIN}
 
 TEST_PYCODESTYLE_OPTS ?=
 
+TEST_RUFF_CHECK_OPTS ?=
+
 
 .PHONY: static-analysis
 static-analysis: static-text-check
@@ -48,7 +50,12 @@ test-pycodestyle:
 	$(PYTHON) -m pycodestyle ${TEST_PYCODESTYLE_OPTS} \
 		${CODE_PACKAGE_DIRS}
 
-static-analysis: test-pymccabe test-pycodestyle
+.PHONY: test-ruff
+test-ruff:
+	$(PYTHON) -m ruff check ${TEST_RUFF_CHECK_OPTS} \
+		${CODE_PACKAGE_DIRS}
+
+static-analysis: test-pymccabe test-pycodestyle test-ruff
 
 
 # Copyright © 2008–2024 Ben Finney <ben+python@benfinney.id.au>

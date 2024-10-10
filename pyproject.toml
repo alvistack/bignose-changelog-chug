@@ -59,6 +59,10 @@ static-analysis = [
     # Documentation: <URL:https://pycodestyle.pycqa.org/>.
     "pycodestyle ~= 2.12",
 
+    # Python linter and code formatter.
+    # Documentation: <URL:https://docs.astral.sh/ruff/>.
+    "ruff ~= 0.6",
+
     ]
 
 test = [
