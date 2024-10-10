@@ -13,6 +13,30 @@ name = "changelog-chug"
 # Text file containing detailed description of the distribution.
 readme = { file = "README", content-type = "text/x-rst" }
 
+# Keywords to categorise this project.
+keywords = ["version", "changelog", "release", "packaging"]
+
+# Trove classifiers for this project.
+# Reference: <URL:https://pypi.org/classifiers/>
+classifiers = [
+    "Development Status :: 2 - Pre-Alpha",
+    "License :: OSI Approved :: GNU Affero General Public License v3 or later (AGPLv3+)",
+    "Programming Language :: Python :: 3",
+    "Intended Audience :: Developers",
+    "Topic :: Software Development :: Build Tools",
+    ]
+
+# The Python version requirements of the project.
+requires-python = ">= 3.7"
+
+# The license granted to recipients of this project.
+license = { file = "COPYING" }
+
+# The persons or entities considered the authors of this project.
+authors = [
+    { name = "Ben Finney", email = "ben+python@benfinney.id.au" },
+    ]
+
 # Names of fields that must be dynamically computed by the build system.
 dynamic = [
     "description",
