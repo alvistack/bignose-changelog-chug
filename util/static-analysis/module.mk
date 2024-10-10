@@ -25,6 +25,8 @@ static-analysis: static-text-check
 static-text-check:
 	${MAKE_STATIC_ANALYSIS_MODULE_DIR}/check-text-files-format
 
+check: static-analysis
+
 
 .PHONY: test-pymccabe
 test-pymccabe:

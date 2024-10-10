@@ -38,6 +38,10 @@ clean:
 	$(RM) -r ${GENERATED_FILES}
 
 
+.PHONY: check
+check:
+
+
 # Copyright © 2008–2024 Ben Finney <ben+python@benfinney.id.au>
 #
 # This is free software: you may copy, modify, and/or distribute this work
