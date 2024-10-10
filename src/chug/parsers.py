@@ -68,6 +68,17 @@ def parse_person_field(value):
     return result
 
 
+def get_changelog_document_text(infile_path):
+    """ Get the changelog document text from file at `infile_path`.
+
+        :param infile_path: Filesystem path of the document to read.
+        :return: Text content from the file.
+        """
+    with open(infile_path, encoding='utf-8') as infile:
+        text = infile.read()
+    return text
+
+
 # Copyright © 2008–2024 Ben Finney <ben+python@benfinney.id.au>
 #
 # This is free software: you may copy, modify, and/or distribute this work

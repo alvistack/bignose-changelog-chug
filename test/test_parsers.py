@@ -7,6 +7,9 @@
 
 """ Test cases for ‘chug.parsers’ package. """
 
+import textwrap
+import unittest.mock
+
 import testscenarios
 import testtools
 
@@ -124,6 +127,81 @@ class parse_person_field_TestCase(
         else:
             result = chug.parsers.parse_person_field(self.test_person)
             self.assertEqual(self.expected_result, result)
+
+
+def mock_builtin_open_for_fake_files(testcase, *, fake_file_content_by_path):
+    """ Mock builtin `open` during `testcase`, for specific fake files.
+
+        :param testcase: The test case during which to mock `open`.
+        :param fake_file_content_by_path: Mapping of
+            `{file_path: fake_file_content}`.
+
+        Create fake files (`io.StringIO`) containing each `fake_file_content`.
+        Wrap the `builtins.open` function such that, for the specified
+        filesystem paths only, a specific mock `open` function will be called,
+        that returns the corresponding fake file; for any unspecified path,
+        the original `builtins.open` will be called as normal.
+        """
+    testcase.mock_open_by_path = {
+        file_path: unittest.mock.mock_open(read_data=fake_file_content)
+        for (file_path, fake_file_content)
+        in fake_file_content_by_path.items()}
+
+    def fake_open(file, *args, **kwargs):
+        """ Wrapper for builtin `open`, faking for specific paths. """
+        open_func = (
+            testcase.mock_open_by_path[file]
+            if file in testcase.mock_open_by_path
+            else __builtins__.open)
+        return open_func(file, *args, **kwargs)
+
+    testcase.open_patcher = unittest.mock.patch.object(
+        chug.parsers.core, 'open', side_effect=fake_open)
+    testcase.open_patcher.start()
+    testcase.addCleanup(testcase.open_patcher.stop)
+
+
+class get_changelog_document_text_BaseTestCase(testtools.TestCase):
+    """ Base for test cases for ‘get_changelog_document_text’ function. """
+
+    def setUp(self):
+        """ Set up fixtures for this test case. """
+        super().setUp()
+
+        mock_builtin_open_for_fake_files(
+            self,
+            fake_file_content_by_path={
+                self.test_infile_path: self.test_infile_text,
+            })
+
+        self.set_test_args()
+
+    def set_test_args(self):
+        """ Set the `test_args` test case attribute. """
+        self.test_args = [
+            self.test_infile_path,
+        ]
+
+
+class get_changelog_document_text_TestCase(
+        testscenarios.WithScenarios,
+        get_changelog_document_text_BaseTestCase):
+    """ Test cases for ‘get_changelog_document_text’ function. """
+
+    scenarios = [
+        ('simple', {
+            'test_infile_path': "lorem.changelog",
+            'test_infile_text': textwrap.dedent("""\
+                lorem ipsum
+                """),
+        }),
+    ]
+
+    def test_returns_file_text_content(self):
+        """ Should return text content from the input file. """
+        expected_result = self.test_infile_text
+        result = chug.parsers.get_changelog_document_text(*self.test_args)
+        self.assertEqual(expected_result, result)
 
 
 # Copyright © 2008–2024 Ben Finney <ben+python@benfinney.id.au>
