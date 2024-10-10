@@ -75,6 +75,14 @@ test = [
 
     ]
 
+[project.urls]
+"Home Page" = "https://git.sr.ht/~bignose/changelog-chug"
+"Change Log" = """
+    https://git.sr.ht/~bignose/changelog-chug/tree/main/item/ChangeLog
+    """
+"Source" = "https://git.sr.ht/~bignose/changelog-chug"
+"Issue Tracker" = "https://todo.sr.ht/~bignose/changelog-chug"
+
 [build-system]
 
 # Minimum requirements for the build system.
