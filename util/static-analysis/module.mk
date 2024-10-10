@@ -19,6 +19,8 @@ TEST_PYCODESTYLE_OPTS ?=
 
 TEST_RUFF_CHECK_OPTS ?=
 
+TEST_ISORT_OPTS ?= --check-only --diff
+
 
 .PHONY: static-analysis
 static-analysis: static-text-check
@@ -56,6 +58,12 @@ test-ruff:
 		${CODE_PACKAGE_DIRS}
 
 static-analysis: test-pymccabe test-pycodestyle test-ruff
+
+
+.PHONY: test-isort
+test-isort:
+	$(PYTHON) -m isort ${TEST_ISORT_OPTS} \
+		${CODE_PACKAGE_DIRS}
 
 
 # Copyright © 2008–2024 Ben Finney <ben+python@benfinney.id.au>

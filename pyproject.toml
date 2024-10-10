@@ -91,6 +91,10 @@ devel = [
     # Documentation: <URL:https://github.com/asottile/pyupgrade>.
     "pyupgrade ~= 3.17",
 
+    # Python ‘import’ statement sorter.
+    # Documentation: <URL:https://pycqa.github.io/isort/>.
+    "isort ~= 5.13",
+
     ]
 
 [project.urls]
