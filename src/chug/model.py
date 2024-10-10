@@ -136,6 +136,15 @@ class ChangeLogEntry:
 
         return entry
 
+    def __eq__(self, other):
+        result = False
+        if isinstance(other, type(self)):
+            self_mapping = self.make_ordered_dict(vars(self))
+            other_mapping = self.make_ordered_dict(vars(other))
+            if self_mapping == other_mapping:
+                result = True
+        return result
+
 
 def get_latest_version(versions):
     """ Get the latest version from a collection of changelog entries.

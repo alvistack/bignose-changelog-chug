@@ -193,6 +193,64 @@ class ChangeLogEntry_body_TestCase(ChangeLogEntry_BaseTestCase):
         self.assertEqual(self.expected_body, instance.body)
 
 
+class ChangeLogEntry_eq_TestCase(
+        ChangeLogEntry_BaseTestCase):
+    """ Test cases for ‘ChangeLogEntry.__eq__’ method. """
+
+    scenarios = [
+        ('identical', {
+            'test_instance': chug.model.ChangeLogEntry(
+                release_date="2004-01-01",
+                version="0.8",
+                maintainer="Foo Bar <foo.bar@example.org>",
+                body="* Donec venenatis nisl aliquam ipsum.\n",
+            ),
+            'test_other': chug.model.ChangeLogEntry(
+                release_date="2004-01-01",
+                version="0.8",
+                maintainer="Foo Bar <foo.bar@example.org>",
+                body="* Donec venenatis nisl aliquam ipsum.\n",
+            ),
+            'expected_result': True,
+        }),
+        ('all fields different', {
+            'test_instance': chug.model.ChangeLogEntry(
+                release_date="2004-01-01",
+                version="0.8",
+                maintainer="Foo Bar <foo.bar@example.org>",
+                body="* Donec venenatis nisl aliquam ipsum.\n",
+            ),
+            'test_other': chug.model.ChangeLogEntry(
+                release_date="2001-01-01",
+                version="0.7.2",
+                maintainer="Foo Bar <foo.bar@example.org>",
+                body="* Pellentesque elementum mollis finibus.\n",
+            ),
+            'expected_result': False,
+        }),
+        ('different types', {
+            'test_instance': chug.model.ChangeLogEntry(
+                release_date="2004-01-01",
+                version="0.8",
+                maintainer="Foo Bar <foo.bar@example.org>",
+                body="* Donec venenatis nisl aliquam ipsum.\n",
+            ),
+            'test_other': {
+                'release_date': "2004-01-01",
+                'version': "0.8",
+                'maintainer': "Foo Bar <foo.bar@example.org>",
+                'body': "* Donec venenatis nisl aliquam ipsum.\n",
+            },
+            'expected_result': False,
+        }),
+    ]
+
+    def test_compares_equality_as_expected(self):
+        """ Should compare for equality as expected. """
+        result = (self.test_instance == self.test_other)
+        self.assertEqual(self.expected_result, result)
+
+
 class ChangeLogEntry_as_version_info_entry_TestCase(
         ChangeLogEntry_BaseTestCase):
     """ Test cases for ‘ChangeLogEntry.as_version_info_entry’ attribute. """
