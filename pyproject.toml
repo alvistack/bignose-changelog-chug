@@ -83,6 +83,16 @@ test = [
 
     ]
 
+devel = [
+
+    "changelog-chug[test]",
+
+    # Tool to upgrade Python syntax for newer versions.
+    # Documentation: <URL:https://github.com/asottile/pyupgrade>.
+    "pyupgrade ~= 3.17",
+
+    ]
+
 [project.urls]
 "Home Page" = "https://git.sr.ht/~bignose/changelog-chug"
 "Change Log" = """
