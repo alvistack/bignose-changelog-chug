@@ -9,6 +9,7 @@
 
 import collections
 import contextlib
+import functools
 
 import testscenarios
 import testtools
@@ -220,6 +221,51 @@ class ChangeLogEntry_as_version_info_entry_TestCase(
         """ Should return expected result. """
         result = self.test_instance.as_version_info_entry()
         self.assertEqual(self.expected_result, result)
+
+
+DefaultNoneDict = functools.partial(collections.defaultdict, lambda: None)
+
+
+class get_latest_version_TestCase(
+        testscenarios.WithScenarios, testtools.TestCase):
+    """ Test cases for ‘get_latest_version’ function. """
+
+    scenarios = [
+        ('simple', {
+            'test_versions': [
+                DefaultNoneDict({'release_date': "LATEST"}),
+            ],
+            'expected_result': chug.model.ChangeLogEntry.make_ordered_dict(
+                DefaultNoneDict({'release_date': "LATEST"})),
+        }),
+        ('no versions', {
+            'test_versions': [],
+            'expected_result': collections.OrderedDict(),
+        }),
+        ('ordered versions', {
+            'test_versions': [
+                DefaultNoneDict({'release_date': "1"}),
+                DefaultNoneDict({'release_date': "2"}),
+                DefaultNoneDict({'release_date': "LATEST"}),
+            ],
+            'expected_result': chug.model.ChangeLogEntry.make_ordered_dict(
+                DefaultNoneDict({'release_date': "LATEST"})),
+        }),
+        ('un-ordered versions', {
+            'test_versions': [
+                DefaultNoneDict({'release_date': "2"}),
+                DefaultNoneDict({'release_date': "LATEST"}),
+                DefaultNoneDict({'release_date': "1"}),
+            ],
+            'expected_result': chug.model.ChangeLogEntry.make_ordered_dict(
+                DefaultNoneDict({'release_date': "LATEST"})),
+        }),
+    ]
+
+    def test_returns_expected_result(self):
+        """ Should return expected result. """
+        result = chug.model.get_latest_version(self.test_versions)
+        self.assertDictEqual(self.expected_result, result)
 
 
 # Copyright © 2008–2024 Ben Finney <ben+python@benfinney.id.au>

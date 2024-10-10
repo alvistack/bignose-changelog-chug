@@ -137,6 +137,26 @@ class ChangeLogEntry:
         return entry
 
 
+def get_latest_version(versions):
+    """ Get the latest version from a collection of changelog entries.
+
+        :param versions: A collection of mappings for changelog entries.
+        :return: An ordered mapping of fields for the latest version,
+            if `versions` is non-empty; otherwise, an empty mapping.
+        """
+    version_info = collections.OrderedDict()
+
+    versions_by_release_date = {
+        item['release_date']: item
+        for item in versions}
+    if versions_by_release_date:
+        latest_release_date = max(versions_by_release_date.keys())
+        version_info = ChangeLogEntry.make_ordered_dict(
+            versions_by_release_date[latest_release_date])
+
+    return version_info
+
+
 # Copyright © 2008–2024 Ben Finney <ben+python@benfinney.id.au>
 #
 # This is free software: you may copy, modify, and/or distribute this work
