@@ -47,6 +47,10 @@ dynamic = [
 
 static-analysis = [
 
+    # Pip version inspector that reports PyPI available updates.
+    # Homepage: <URL:https://github.com/bartTC/pip-check/>.
+    "pip-check",
+
     # McCabe code complexity measurement tool.
     # Documentation: <URL:https://github.com/pycqa/mccabe>.
     "mccabe ~= 0.7",

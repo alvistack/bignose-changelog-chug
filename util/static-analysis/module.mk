@@ -28,6 +28,13 @@ static-text-check:
 check: static-analysis
 
 
+.PHONY: pip-available-updates-check
+pip-available-updates-check:
+	$(PYTHON) -m pip check ${TEST_PIP_CHECK_OPTS}
+
+check: pip-available-updates-check
+
+
 .PHONY: test-pymccabe
 test-pymccabe:
 	for f in ${CODE_MODULES} ; do \
