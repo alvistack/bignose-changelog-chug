@@ -36,6 +36,10 @@ dependencies = [
     # Documentation: <URL:https://python-semver.readthedocs.io/>.
     "semver >= 3.0.0",
 
+    # Python Documentation Utilities.
+    # Documentation: <URL:https://docutils.sourceforge.io/docs/>.
+    "docutils >= 0.21.0",
+
     ]
 
 # The license granted to recipients of this project.
