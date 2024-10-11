@@ -24,6 +24,48 @@ def parse_rest_document_from_text(document_text):
     return document
 
 
+def get_node_text(node):
+    """ Get the child text of the `node`.
+
+        :param node: The `docutils.nodes.Node` instance to query.
+        :return: The child text of `node`, or ``None`` if absent.
+        :raises TypeError: If the `node` is not a `docutils.nodes.Node`.
+        """
+    if not isinstance(node, docutils.nodes.Node):
+        raise TypeError("not a Docutils node: {!r}".format(node))
+    node_text_children = (
+        [
+            child_node for child_node in node.children
+            if isinstance(child_node, docutils.nodes.Text)]
+        if node is not None
+        else None)
+    result = (
+        next(iter(node_text_children)) if node_text_children
+        else None)
+    return result
+
+
+def get_node_title_text(node):
+    """ Get the `node`'s `title` node child text.
+
+        :param rest_document: Document root, as a `docutils.nodes.document`
+            instance.
+        :return: The text of the `title` node, if any, of the `node`; or
+            ``None`` if absent.
+        :raises TypeError: If the `node` is not a `docutils.nodes.Node`.
+        """
+    if not isinstance(node, docutils.nodes.Node):
+        raise TypeError("not a Docutils node: {!r}".format(node))
+    title_nodes = [
+        child_node for child_node in node.children
+        if isinstance(child_node, docutils.nodes.title)]
+    title = (next(iter(title_nodes)) if title_nodes else None)
+    result = (
+        get_node_text(title) if title is not None
+        else None)
+    return result
+
+
 def get_document_title_text(rest_document):
     """ Get the document's `title` node child text.
 
@@ -37,15 +79,7 @@ def get_document_title_text(rest_document):
     if not isinstance(rest_document, docutils.nodes.document):
         raise TypeError(
             "not a Docutils document root: {!r}".format(rest_document))
-    title_nodes = [
-        node for node in rest_document.children
-        if isinstance(node, docutils.nodes.title)]
-    title = (
-        next(iter(title_nodes)) if title_nodes
-        else None)
-    result = (
-        next(iter(title.children)) if title is not None
-        else None)
+    result = get_node_title_text(rest_document)
     return result
 
 
@@ -67,7 +101,7 @@ def get_document_subtitle_text(rest_document):
         if isinstance(child_node, docutils.nodes.subtitle)]
     subtitle = (next(iter(subtitle_nodes)) if subtitle_nodes else None)
     result = (
-        next(iter(subtitle.children)) if subtitle is not None
+        get_node_text(subtitle) if subtitle is not None
         else None)
     return result
 

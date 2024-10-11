@@ -99,6 +99,116 @@ class parse_rest_document_from_text_TestCase(
             self.assertEqual(expected_result, result)
 
 
+class get_node_text_TestCase(
+        testscenarios.WithScenarios, testtools.TestCase):
+    """ Test cases for ‘get_node_text’ function. """
+
+    function_to_test = staticmethod(chug.parsers.rest.get_node_text)
+
+    test_document = docutils.core.publish_doctree(textwrap.dedent("""\
+        Felis gravida lacinia
+        #####################
+
+        Maecenas feugiat nibh sed enim fringilla faucibus.
+        """))
+
+    scenarios = [
+        ('document-title-node', {
+            'test_args': [next(
+                node for node in test_document.children
+                if isinstance(node, docutils.nodes.title))],
+            'expected_result': "Felis gravida lacinia",
+        }),
+        ('paragraph-node', {
+            'test_args': [next(
+                node for node in test_document.children
+                if isinstance(node, docutils.nodes.paragraph))],
+            'expected_result': (
+                "Maecenas feugiat nibh sed enim fringilla faucibus."),
+        }),
+        ('not-a-node', {
+            'test_args': [object()],
+            'expected_error': TypeError,
+        }),
+    ]
+
+    def test_returns_expected_result(self):
+        """ Should return expected result or raise expected error. """
+        with make_expected_error_context(self):
+            result = self.function_to_test(*self.test_args)
+        if hasattr(self, 'expected_result'):
+            self.assertEqual(self.expected_result, result)
+
+
+class get_node_title_text_TestCase(
+        testscenarios.WithScenarios, testtools.TestCase):
+    """ Test cases for ‘get_node_title_text’ function. """
+
+    function_to_test = staticmethod(chug.parsers.rest.get_node_title_text)
+
+    test_document = docutils.core.publish_doctree(textwrap.dedent("""\
+        #####################
+        Felis gravida lacinia
+        #####################
+
+        Sed commodo ipsum ac felis gravida lacinia.
+
+        Tempus lorem aliquet
+        ====================
+
+        Maecenas feugiat nibh sed enim fringilla faucibus.
+        """))
+
+    scenarios = [
+        ('document-node', {
+            'test_args': [test_document],
+            'expected_result': "Felis gravida lacinia",
+        }),
+        ('section-node', {
+            'test_args': [next(
+                node for node in test_document.children
+                if isinstance(node, docutils.nodes.section))],
+            'expected_result': "Tempus lorem aliquet",
+        }),
+        ('paragraph-node', {
+            'test_args': [next(
+                node for node in test_document.children
+                if isinstance(node, docutils.nodes.paragraph))],
+            'expected_result': None,
+        }),
+        ('not-a-node', {
+            'test_args': [object()],
+            'expected_error': TypeError,
+        }),
+    ]
+
+    def test_returns_expected_result(self):
+        """ Should return expected result or raise expected error. """
+        with make_expected_error_context(self):
+            result = self.function_to_test(*self.test_args)
+        if hasattr(self, 'expected_result'):
+            self.assertEqual(self.expected_result, result)
+
+
+class get_node_title_text_ErrorTestCase(
+        testscenarios.WithScenarios, testtools.TestCase):
+    """ Error test cases for ‘get_node_title_text’ function. """
+
+    function_to_test = staticmethod(chug.parsers.rest.get_node_title_text)
+
+    scenarios = [
+        ('not-a-node', {
+            'test_args': [object()],
+            'expected_error': TypeError,
+        }),
+    ]
+
+    def test_raises_expected_error(self):
+        """ Should raise the `expected_error` type. """
+        with make_expected_error_context(self):
+            __ = self.function_to_test(*self.test_args)
+
+
 def make_rest_document_test_scenarios():
     """ Make a sequence of scenarios for testing different reST documents.
 
