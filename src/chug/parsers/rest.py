@@ -8,6 +8,7 @@
 """ Parser features for reStructuredText documents. """
 
 import docutils.core
+import docutils.nodes
 
 
 def parse_rest_document_from_text(document_text):
@@ -21,6 +22,72 @@ def parse_rest_document_from_text(document_text):
         raise TypeError("not a text string: {!r}".format(document_text))
     document = docutils.core.publish_doctree(document_text)
     return document
+
+
+def get_document_title_text(rest_document):
+    """ Get the document's `title` node child text.
+
+        :param rest_document: Document root, as a `docutils.nodes.document`
+            instance.
+        :return: The text of the document's `title` node, or ``None`` if
+            absent.
+        :raises TypeError: If the `rest_document` is not a
+            `docutils.nodes.document`.
+        """
+    if not isinstance(rest_document, docutils.nodes.document):
+        raise TypeError(
+            "not a Docutils document root: {!r}".format(rest_document))
+    title_nodes = [
+        node for node in rest_document.children
+        if isinstance(node, docutils.nodes.title)]
+    title = (
+        next(iter(title_nodes)) if title_nodes
+        else None)
+    result = (
+        next(iter(title.children)) if title is not None
+        else None)
+    return result
+
+
+def get_document_subtitle_text(rest_document):
+    """ Get the document's `subtitle` node child text.
+
+        :param rest_document: Document root, as a `docutils.nodes.document`
+            instance.
+        :return: The text of the document's `subtitle` node, or ``None`` if
+            absent.
+        :raises TypeError: If the `rest_document` is not a
+            `docutils.nodes.document`.
+        """
+    if not isinstance(rest_document, docutils.nodes.document):
+        raise TypeError(
+            "not a Docutils document root: {!r}".format(rest_document))
+    subtitle_nodes = [
+        child_node for child_node in rest_document.children
+        if isinstance(child_node, docutils.nodes.subtitle)]
+    subtitle = (next(iter(subtitle_nodes)) if subtitle_nodes else None)
+    result = (
+        next(iter(subtitle.children)) if subtitle is not None
+        else None)
+    return result
+
+
+def get_top_level_sections(rest_document):
+    """ Get the top-level section objects from `rest_document`.
+
+        :param rest_document: Document root, as a `docutils.nodes.document`
+            instance.
+        :return: Sequence of `docutils.nodes.section` instances.
+        :raises TypeError: If the `rest_document` is not a
+            `docutils.nodes.document`.
+        """
+    if not isinstance(rest_document, docutils.nodes.document):
+        raise TypeError(
+            "not a Docutils document root: {!r}".format(rest_document))
+    sections = (
+        node for node in rest_document.children
+        if isinstance(node, docutils.nodes.section))
+    return sections
 
 
 # Copyright © 2008–2024 Ben Finney <ben+python@benfinney.id.au>
