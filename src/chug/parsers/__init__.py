@@ -9,12 +9,14 @@
 
 from .core import (
     InvalidFormatError,
+    entry_title_regex,
     get_changelog_document_text,
     parse_person_field,
 )
 
 __all__ = [
     'InvalidFormatError',
+    'entry_title_regex',
     'get_changelog_document_text',
     'parse_person_field',
 ]

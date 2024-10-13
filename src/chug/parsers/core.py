@@ -8,6 +8,7 @@
 """ Core functionality for document parsers. """
 
 import collections
+import re
 
 from ..model import rfc822_person_regex
 
@@ -77,6 +78,12 @@ def get_changelog_document_text(infile_path):
     with open(infile_path, encoding='utf-8') as infile:
         text = infile.read()
     return text
+
+
+entry_title_regex = re.compile(
+    r"^version (?P<version>[\w.-]+)$",
+    re.IGNORECASE)
+""" Regular Expression pattern to match a change log entry title. """
 
 
 # Copyright © 2008–2024 Ben Finney <ben+python@benfinney.id.au>
