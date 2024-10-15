@@ -298,6 +298,23 @@ class verify_is_change_log_entry_title_TestCase(
             self.function_to_test(*self.test_args, **self.test_kwargs)
 
 
+class get_version_text_from_entry_title_TestCase(
+        testscenarios.WithScenarios, testtools.TestCase):
+    """ Test cases for ‘get_version_text_from_entry_title’ function. """
+
+    function_to_test = staticmethod(
+        chug.parsers.core.get_version_text_from_entry_title)
+
+    scenarios = make_change_log_entry_title_scenarios()
+
+    def test_returns_expected_result_or_raises_error(self):
+        """ Should return or raise expected result or exception. """
+        with make_expected_error_context(self):
+            result = self.function_to_test(*self.test_args, **self.test_kwargs)
+        if hasattr(self, 'expected_result'):
+            self.assertEqual(self.expected_result, result)
+
+
 # Copyright © 2008–2024 Ben Finney <ben+python@benfinney.id.au>
 #
 # This is free software: you may copy, modify, and/or distribute this work

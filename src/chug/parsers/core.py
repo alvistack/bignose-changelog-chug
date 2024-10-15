@@ -107,6 +107,30 @@ def verify_is_change_log_entry_title(
     if regex_pattern.match(title) is None:
         raise ChangeLogEntryTitleFormatInvalidError(title)
 
+
+def get_version_text_from_entry_title(
+        title,
+        *,
+        regex_pattern=entry_title_regex,
+):
+    """ Get the version text from the change log entry title text `title`.
+
+        :param title: The title (text) of the change log entry to query.
+        :param regex_pattern: The compiled `re.Pattern` instance to use for
+            matching the `title` text.
+        :return: The version text parsed from `title`.
+        :raises ChangeLogEntryTitleFormatInvalidError: If `title` does
+            not match the expected title format.
+
+        The `regex_pattern` is expected to define a 'version' match group that
+        will match only the version text.
+        """
+    match = regex_pattern.match(title)
+    if match is None:
+        raise ChangeLogEntryTitleFormatInvalidError(title)
+    version_text = match.group('version')
+    return version_text
+
 
 # Copyright © 2008–2024 Ben Finney <ben+python@benfinney.id.au>
 #
