@@ -929,6 +929,30 @@ class get_top_level_sections_ErrorTestCase(
             __ = self.function_to_test(*self.test_args)
 
 
+class get_version_text_from_changelog_entry_TestCase(
+        testscenarios.WithScenarios, testtools.TestCase):
+    """ Test cases for ‘get_version_text_from_changelog_entry’ function. """
+
+    function_to_test = staticmethod(
+        chug.parsers.rest.get_version_text_from_changelog_entry)
+
+    scenarios = make_rest_document_test_scenarios()
+
+    def test_returns_expected_result(self):
+        """ Should return expected result. """
+        test_document = docutils.core.publish_doctree(
+            self.test_document_text)
+        changelog_entry_nodes = chug.parsers.rest.get_top_level_sections(
+            test_document)
+        for (entry_node, expected_version_text) in (zip(
+                changelog_entry_nodes,
+                self.expected_versions_text)):
+            with self.subTest(expected_version_text=expected_version_text):
+                test_args = [entry_node]
+                result = self.function_to_test(*test_args)
+            self.assertEqual(expected_version_text, result)
+
+
 # Copyright © 2008–2024 Ben Finney <ben+python@benfinney.id.au>
 #
 # This is free software: you may copy, modify, and/or distribute this work

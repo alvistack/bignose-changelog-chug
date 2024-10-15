@@ -10,6 +10,8 @@
 import docutils.core
 import docutils.nodes
 
+from . import core
+
 
 def parse_rest_document_from_text(document_text):
     """ Get the document structure, parsed from `document_text`.
@@ -122,6 +124,18 @@ def get_top_level_sections(rest_document):
         node for node in rest_document.children
         if isinstance(node, docutils.nodes.section))
     return sections
+
+
+def get_version_text_from_changelog_entry(entry_node):
+    """ Get the version text from changelog entry node `entry_node`.
+
+        :param entry_node: The `docutils.nodes.Node` representing the change
+            log entry.
+        :return: The version text parsed from the `entry_node` title.
+        """
+    title_text = get_node_title_text(entry_node)
+    version_text = core.get_version_text_from_entry_title(title_text)
+    return version_text
 
 
 # Copyright © 2008–2024 Ben Finney <ben+python@benfinney.id.au>
