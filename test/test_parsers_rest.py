@@ -88,13 +88,9 @@ class parse_rest_document_from_text_TestCase(
             self.test_document_text)
 
     def test_returns_expected_result(self):
-        """ Should return expected result. """
-        if hasattr(self, 'expected_error'):
-            self.assertRaises(
-                self.expected_error,
-                self.function_to_test, *self.test_args)
-        else:
-            expected_result = self.fake_document_node
+        """ Should return expected result or raise expected error. """
+        expected_result = self.fake_document_node
+        with make_expected_error_context(self):
             result = self.function_to_test(*self.test_args)
             self.assertEqual(expected_result, result)
 

@@ -11,11 +11,15 @@ import re
 import textwrap
 import unittest.mock
 
+import semver
 import testscenarios
 import testtools
 
 import chug.parsers
-from chug.parsers.core import ChangeLogEntryTitleFormatInvalidError
+from chug.parsers.core import (
+    ChangeLogEntryTitleFormatInvalidError,
+    VersionFormatInvalidError,
+)
 import chug.parsers.core
 
 from . import make_expected_error_context
@@ -313,6 +317,89 @@ class get_version_text_from_entry_title_TestCase(
             result = self.function_to_test(*self.test_args, **self.test_kwargs)
         if hasattr(self, 'expected_result'):
             self.assertEqual(self.expected_result, result)
+
+
+class get_version_from_version_text_TestCase(
+        testscenarios.WithScenarios, testtools.TestCase):
+    """ Test cases for ‘get_version_from_version_text’ function. """
+
+    function_to_test = staticmethod(
+        chug.parsers.core.get_version_from_version_text)
+
+    scenarios = [
+        ('major-only', {
+            'test_args': ["1"],
+            'test_kwargs': {},
+            'expected_result': semver.Version.parse(
+                "1", optional_minor_and_patch=True),
+        }),
+        ('major-and-minor-only', {
+            'test_args': ["1.5"],
+            'test_kwargs': {},
+            'expected_result': semver.Version.parse(
+                "1.5", optional_minor_and_patch=True),
+        }),
+        ('major-minor-patch', {
+            'test_args': ["1.5.3"],
+            'test_kwargs': {},
+            'expected_result': semver.Version.parse(
+                "1.5.3", optional_minor_and_patch=True),
+        }),
+        ('major-minor-patch-prerelease', {
+            'test_args': ["1.5.3-beta2"],
+            'test_kwargs': {},
+            'expected_result': semver.Version.parse(
+                "1.5.3-beta2", optional_minor_and_patch=True),
+        }),
+        ('major-minor-patch-build', {
+            'test_args': ["1.5.3+d3adb33f"],
+            'test_kwargs': {},
+            'expected_result': semver.Version.parse(
+                "1.5.3+d3adb33f", optional_minor_and_patch=True),
+        }),
+        ('major-minor-build', {
+            'test_args': ["1.5+d3adb33f"],
+            'test_kwargs': {},
+            'expected_result': semver.Version.parse(
+                "1.5+d3adb33f", optional_minor_and_patch=True),
+        }),
+    ]
+
+    def test_returns_expected_result(self):
+        """ Should return expected result. """
+        result = self.function_to_test(*self.test_args, **self.test_kwargs)
+        self.assertEqual(self.expected_result, result)
+
+
+class get_version_from_version_text_ErrorTestCase(
+        testscenarios.WithScenarios, testtools.TestCase):
+    """ Error test cases for ‘get_version_from_version_text’ function. """
+
+    function_to_test = staticmethod(
+        chug.parsers.core.get_version_from_version_text)
+
+    scenarios = [
+        ('empty', {
+            'test_args': [""],
+            'test_kwargs': {},
+            'expected_error': VersionFormatInvalidError,
+        }),
+        ('version-meaningless', {
+            'test_args': ["b%g^s"],
+            'test_kwargs': {},
+            'expected_error': VersionFormatInvalidError,
+        }),
+        ('version-too-many-components', {
+            'test_args': ["2.4.6.8"],
+            'test_kwargs': {},
+            'expected_error': VersionFormatInvalidError,
+        }),
+    ]
+
+    def test_raises_expected_error(self):
+        """ Should raise error of the expected exception type. """
+        with testtools.ExpectedException(self.expected_error):
+            __ = self.function_to_test(*self.test_args, **self.test_kwargs)
 
 
 # Copyright © 2008–2024 Ben Finney <ben+python@benfinney.id.au>

@@ -10,6 +10,8 @@
 import collections
 import re
 
+import semver
+
 from ..model import rfc822_person_regex
 
 
@@ -130,6 +132,26 @@ def get_version_text_from_entry_title(
         raise ChangeLogEntryTitleFormatInvalidError(title)
     version_text = match.group('version')
     return version_text
+
+
+class VersionFormatInvalidError(ValueError):
+    """ Raised when entry version text is invalid for Semantic Version. """
+
+
+def get_version_from_version_text(version_text):
+    """ Get the `semver.Version` representation of `version_text`
+
+        :param version_text:
+        :return: A `semver.Version` instance representing the version.
+        :raises VersionFormatInvalidError: If `version_text` does not parse as
+            a Semantic Version value.
+        """
+    try:
+        version = semver.Version.parse(
+            version_text, optional_minor_and_patch=True)
+    except ValueError as exc:
+        raise VersionFormatInvalidError(version_text) from exc
+    return version
 
 
 # Copyright © 2008–2024 Ben Finney <ben+python@benfinney.id.au>
