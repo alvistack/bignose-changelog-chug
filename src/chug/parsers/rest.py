@@ -196,6 +196,27 @@ def get_changelog_entry_title_from_node(entry_node):
     return entry_title
 
 
+def get_changelog_entry_nodes_from_document(rest_document):
+    """ Get the nodes from `rest_document` that represent change log entries.
+
+        :param rest_document: Document root, as a `docutils.nodes.document`
+            instance.
+        :raises TypeError: If the `rest_document` is not a
+            `docutils.nodes.document`.
+        :return: Sequence of `docutils.nodes.Node` instances, each representing
+            a change log entry.
+        """
+    entry_nodes = list(get_top_level_sections(rest_document))
+    if not entry_nodes:
+        entry_nodes = [rest_document]
+    for entry_node in entry_nodes:
+        # Verify that the title is a valid change log entry title.
+        # If this fails an exception will raise.
+        __ = get_changelog_entry_title_from_node(entry_node)
+    result = entry_nodes
+    return result
+
+
 # Copyright © 2008–2024 Ben Finney <ben+python@benfinney.id.au>
 #
 # This is free software: you may copy, modify, and/or distribute this work

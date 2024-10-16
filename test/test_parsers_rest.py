@@ -14,6 +14,7 @@ import unittest.mock
 import docutils.core
 import docutils.nodes
 import docutils.utils
+import semver
 import testscenarios
 import testtools
 
@@ -336,6 +337,36 @@ def make_rest_document_test_scenarios():
             'expected_changelog_entries_title_text': [
                 "Version 1.0",
             ],
+            'expected_changelog_entries_pformat': [
+                textwrap.dedent("""\
+                    <document
+                        ids="version-1-0" names="version\\ 1.0"
+                        source="<string>" title="Version 1.0">
+                    <title>
+                        Version 1.0
+                    <docinfo>
+                        <field classes="released">
+                            <field_name>
+                                Released
+                            <field_body>
+                                <paragraph>
+                                    2009-01-01
+                        <field classes="maintainer">
+                            <field_name>
+                                Maintainer
+                            <field_body>
+                                <paragraph>
+                                    Foo Bar <
+                                    <reference
+                                    refuri="mailto:foo.bar@example.org">
+                                        foo.bar@example.org
+                                    >
+                    <bullet_list bullet="*">
+                        <list_item>
+                            <paragraph>
+                                Lorem ipsum dolor sit amet.
+                    """),
+            ],
             'expected_versions_text': [
                 "1.0",
             ],
@@ -387,6 +418,86 @@ def make_rest_document_test_scenarios():
                 "version 0.8",
                 "Version 0.7.2",
             ],
+            'expected_changelog_entries_pformat': [
+                textwrap.dedent("""\
+                    <section ids="version-1-0" names="version\\ 1.0">
+                        <title>
+                            Version 1.0
+                        <field_list>
+                            <field>
+                                <field_name>
+                                    Released
+                                <field_body>
+                                    <paragraph>
+                                        2009-01-01
+                            <field>
+                                <field_name>
+                                    Maintainer
+                                <field_body>
+                                    <paragraph>
+                                        Foo Bar <
+                                        <reference
+                                        refuri="mailto:foo.bar@example.org">
+                                            foo.bar@example.org
+                                        >
+                        <bullet_list bullet="*">
+                            <list_item>
+                                <paragraph>
+                                    Lorem ipsum dolor sit amet.
+                    """),
+                textwrap.dedent("""\
+                    <section ids="version-0-8" names="version\\ 0.8">
+                        <title>
+                            version 0.8
+                        <field_list>
+                            <field>
+                                <field_name>
+                                    Released
+                                <field_body>
+                                    <paragraph>
+                                        2004-01-01
+                            <field>
+                                <field_name>
+                                    Maintainer
+                                <field_body>
+                                    <paragraph>
+                                        Foo Bar <
+                                        <reference
+                                        refuri="mailto:foo.bar@example.org">
+                                            foo.bar@example.org
+                                        >
+                        <bullet_list bullet="*">
+                            <list_item>
+                                <paragraph>
+                                    Donec venenatis nisl aliquam ipsum.
+                    """),
+                textwrap.dedent("""\
+                    <section ids="version-0-7-2" names="version\\ 0.7.2">
+                        <title>
+                            Version 0.7.2
+                        <field_list>
+                            <field>
+                                <field_name>
+                                    Released
+                                <field_body>
+                                    <paragraph>
+                                        2001-01-01
+                            <field>
+                                <field_name>
+                                    Maintainer
+                                <field_body>
+                                    <paragraph>
+                                        Foo Bar <
+                                        <reference
+                                        refuri="mailto:foo.bar@example.org">
+                                            foo.bar@example.org
+                                        >
+                        <bullet_list bullet="*">
+                            <list_item>
+                                <paragraph>
+                                    Pellentesque elementum mollis finibus.
+                    """),
+            ],
             'expected_versions_text': [
                 "1.0",
                 "0.8",
@@ -417,6 +528,34 @@ def make_rest_document_test_scenarios():
             ],
             'expected_changelog_entries_title_text': [
                 "Version 1.0",
+            ],
+            'expected_changelog_entries_pformat': [
+                textwrap.dedent("""\
+                    <section ids="version-1-0" names="version\\ 1.0">
+                        <title>
+                            Version 1.0
+                        <field_list>
+                            <field>
+                                <field_name>
+                                    Released
+                                <field_body>
+                                    <paragraph>
+                                        2009-01-01
+                            <field>
+                                <field_name>
+                                    Maintainer
+                                <field_body>
+                                    <paragraph>
+                                        Foo Bar <
+                                        <reference
+                                        refuri="mailto:foo.bar@example.org">
+                                            foo.bar@example.org
+                                        >
+                        <bullet_list bullet="*">
+                            <list_item>
+                                <paragraph>
+                                    Lorem ipsum dolor sit amet.
+                    """),
             ],
             'expected_versions_text': [
                 "1.0",
@@ -472,6 +611,86 @@ def make_rest_document_test_scenarios():
                 "version 0.8",
                 "Version 0.7.2",
             ],
+            'expected_changelog_entries_pformat': [
+                textwrap.dedent("""\
+                    <section ids="version-1-0" names="version\\ 1.0">
+                        <title>
+                            Version 1.0
+                        <field_list>
+                            <field>
+                                <field_name>
+                                    Released
+                                <field_body>
+                                    <paragraph>
+                                        2009-01-01
+                            <field>
+                                <field_name>
+                                    Maintainer
+                                <field_body>
+                                    <paragraph>
+                                        Foo Bar <
+                                        <reference
+                                        refuri="mailto:foo.bar@example.org">
+                                            foo.bar@example.org
+                                        >
+                        <bullet_list bullet="*">
+                            <list_item>
+                                <paragraph>
+                                    Lorem ipsum dolor sit amet.
+                    """),
+                textwrap.dedent("""\
+                    <section ids="version-0-8" names="version\\ 0.8">
+                        <title>
+                            version 0.8
+                        <field_list>
+                            <field>
+                                <field_name>
+                                    Released
+                                <field_body>
+                                    <paragraph>
+                                        2004-01-01
+                            <field>
+                                <field_name>
+                                    Maintainer
+                                <field_body>
+                                    <paragraph>
+                                        Foo Bar <
+                                        <reference
+                                        refuri="mailto:foo.bar@example.org">
+                                            foo.bar@example.org
+                                        >
+                        <bullet_list bullet="*">
+                            <list_item>
+                                <paragraph>
+                                    Donec venenatis nisl aliquam ipsum.
+                    """),
+                textwrap.dedent("""\
+                    <section ids="version-0-7-2" names="version\\ 0.7.2">
+                        <title>
+                            Version 0.7.2
+                        <field_list>
+                            <field>
+                                <field_name>
+                                    Released
+                                <field_body>
+                                    <paragraph>
+                                        2001-01-01
+                            <field>
+                                <field_name>
+                                    Maintainer
+                                <field_body>
+                                    <paragraph>
+                                        Foo Bar <
+                                        <reference
+                                        refuri="mailto:foo.bar@example.org">
+                                            foo.bar@example.org
+                                        >
+                        <bullet_list bullet="*">
+                            <list_item>
+                                <paragraph>
+                                    Pellentesque elementum mollis finibus.
+                    """),
+            ],
             'expected_versions_text': [
                 "1.0",
                 "0.8",
@@ -506,6 +725,40 @@ def make_rest_document_test_scenarios():
             ],
             'expected_changelog_entries_title_text': [
                 "Version 1.0",
+            ],
+            'expected_changelog_entries_pformat': [
+                textwrap.dedent("""\
+                    <document
+                            ids="felis-gravida-lacinia"
+                            names="felis\\ gravida\\ lacinia"
+                            source="<string>"
+                            title="Felis gravida lacinia">
+                        <title>
+                            Felis gravida lacinia
+                        <subtitle ids="version-1-0" names="version\\ 1.0">
+                            Version 1.0
+                        <docinfo>
+                            <field classes="released">
+                                <field_name>
+                                    Released
+                                <field_body>
+                                    <paragraph>
+                                        2009-01-01
+                            <field classes="maintainer">
+                                <field_name>
+                                    Maintainer
+                                <field_body>
+                                    <paragraph>
+                                        Foo Bar <
+                                        <reference
+                                        refuri="mailto:foo.bar@example.org">
+                                            foo.bar@example.org
+                                        >
+                        <bullet_list bullet="*">
+                            <list_item>
+                                <paragraph>
+                                    Lorem ipsum dolor sit amet.
+                    """),
             ],
             'expected_versions_text': [
                 "1.0",
@@ -565,6 +818,86 @@ def make_rest_document_test_scenarios():
                 "version 0.8",
                 "Version 0.7.2",
             ],
+            'expected_changelog_entries_pformat': [
+                textwrap.dedent("""\
+                    <section ids="version-1-0" names="version\\ 1.0">
+                        <title>
+                            Version 1.0
+                        <field_list>
+                            <field>
+                                <field_name>
+                                    Released
+                                <field_body>
+                                    <paragraph>
+                                        2009-01-01
+                            <field>
+                                <field_name>
+                                    Maintainer
+                                <field_body>
+                                    <paragraph>
+                                        Foo Bar <
+                                        <reference
+                                        refuri="mailto:foo.bar@example.org">
+                                            foo.bar@example.org
+                                        >
+                        <bullet_list bullet="*">
+                            <list_item>
+                                <paragraph>
+                                    Lorem ipsum dolor sit amet.
+                    """),
+                textwrap.dedent("""\
+                    <section ids="version-0-8" names="version\\ 0.8">
+                        <title>
+                            version 0.8
+                        <field_list>
+                            <field>
+                                <field_name>
+                                    Released
+                                <field_body>
+                                    <paragraph>
+                                        2004-01-01
+                            <field>
+                                <field_name>
+                                    Maintainer
+                                <field_body>
+                                    <paragraph>
+                                        Foo Bar <
+                                        <reference
+                                        refuri="mailto:foo.bar@example.org">
+                                            foo.bar@example.org
+                                        >
+                        <bullet_list bullet="*">
+                            <list_item>
+                                <paragraph>
+                                    Donec venenatis nisl aliquam ipsum.
+                    """),
+                textwrap.dedent("""\
+                    <section ids="version-0-7-2" names="version\\ 0.7.2">
+                        <title>
+                            Version 0.7.2
+                        <field_list>
+                            <field>
+                                <field_name>
+                                    Released
+                                <field_body>
+                                    <paragraph>
+                                        2001-01-01
+                            <field>
+                                <field_name>
+                                    Maintainer
+                                <field_body>
+                                    <paragraph>
+                                        Foo Bar <
+                                        <reference
+                                        refuri="mailto:foo.bar@example.org">
+                                            foo.bar@example.org
+                                        >
+                        <bullet_list bullet="*">
+                            <list_item>
+                                <paragraph>
+                                    Pellentesque elementum mollis finibus.
+                    """),
+            ],
             'expected_versions_text': [
                 "1.0",
                 "0.8",
@@ -602,6 +935,34 @@ def make_rest_document_test_scenarios():
             ],
             'expected_changelog_entries_title_text': [
                 "Version 1.0",
+            ],
+            'expected_changelog_entries_pformat': [
+                textwrap.dedent("""\
+                    <section ids="version-1-0" names="version\\ 1.0">
+                        <title>
+                            Version 1.0
+                        <field_list>
+                            <field>
+                                <field_name>
+                                    Released
+                                <field_body>
+                                    <paragraph>
+                                        2009-01-01
+                            <field>
+                                <field_name>
+                                    Maintainer
+                                <field_body>
+                                    <paragraph>
+                                        Foo Bar <
+                                        <reference
+                                        refuri="mailto:foo.bar@example.org">
+                                            foo.bar@example.org
+                                        >
+                        <bullet_list bullet="*">
+                            <list_item>
+                                <paragraph>
+                                    Lorem ipsum dolor sit amet.
+                    """),
             ],
             'expected_versions_text': [
                 "1.0",
@@ -662,6 +1023,86 @@ def make_rest_document_test_scenarios():
                 "Version 1.0",
                 "version 0.8",
                 "Version 0.7.2",
+            ],
+            'expected_changelog_entries_pformat': [
+                textwrap.dedent("""\
+                    <section ids="version-1-0" names="version\\ 1.0">
+                        <title>
+                            Version 1.0
+                        <field_list>
+                            <field>
+                                <field_name>
+                                    Released
+                                <field_body>
+                                    <paragraph>
+                                        2009-01-01
+                            <field>
+                                <field_name>
+                                    Maintainer
+                                <field_body>
+                                    <paragraph>
+                                        Foo Bar <
+                                        <reference
+                                        refuri="mailto:foo.bar@example.org">
+                                            foo.bar@example.org
+                                        >
+                        <bullet_list bullet="*">
+                            <list_item>
+                                <paragraph>
+                                    Lorem ipsum dolor sit amet.
+                    """),
+                textwrap.dedent("""\
+                    <section ids="version-0-8" names="version\\ 0.8">
+                        <title>
+                            version 0.8
+                        <field_list>
+                            <field>
+                                <field_name>
+                                    Released
+                                <field_body>
+                                    <paragraph>
+                                        2004-01-01
+                            <field>
+                                <field_name>
+                                    Maintainer
+                                <field_body>
+                                    <paragraph>
+                                        Foo Bar <
+                                        <reference
+                                        refuri="mailto:foo.bar@example.org">
+                                            foo.bar@example.org
+                                        >
+                        <bullet_list bullet="*">
+                            <list_item>
+                                <paragraph>
+                                    Donec venenatis nisl aliquam ipsum.
+                    """),
+                textwrap.dedent("""\
+                    <section ids="version-0-7-2" names="version\\ 0.7.2">
+                        <title>
+                            Version 0.7.2
+                        <field_list>
+                            <field>
+                                <field_name>
+                                    Released
+                                <field_body>
+                                    <paragraph>
+                                        2001-01-01
+                            <field>
+                                <field_name>
+                                    Maintainer
+                                <field_body>
+                                    <paragraph>
+                                        Foo Bar <
+                                        <reference
+                                        refuri="mailto:foo.bar@example.org">
+                                            foo.bar@example.org
+                                        >
+                        <bullet_list bullet="*">
+                            <list_item>
+                                <paragraph>
+                                    Pellentesque elementum mollis finibus.
+                    """),
             ],
             'expected_versions_text': [
                 "1.0",
@@ -799,6 +1240,34 @@ def make_rest_document_test_scenarios():
             'expected_changelog_entries_title_text': [
                 "Version 1.0",
             ],
+            'expected_changelog_entries_pformat': [
+                textwrap.dedent("""\
+                    <section ids="version-1-0" names="version\\ 1.0">
+                        <title>
+                            Version 1.0
+                        <field_list>
+                            <field>
+                                <field_name>
+                                    Released
+                                <field_body>
+                                    <paragraph>
+                                        2009-01-01
+                            <field>
+                                <field_name>
+                                    Maintainer
+                                <field_body>
+                                    <paragraph>
+                                        Foo Bar <
+                                        <reference
+                                        refuri="mailto:foo.bar@example.org">
+                                            foo.bar@example.org
+                                        >
+                        <bullet_list bullet="*">
+                            <list_item>
+                                <paragraph>
+                                    Lorem ipsum dolor sit amet.
+                    """),
+            ],
             'expected_versions_text': [
                 "1.0",
             ],
@@ -861,6 +1330,86 @@ def make_rest_document_test_scenarios():
                 "version 0.8",
                 "Version 0.7.2",
             ],
+            'expected_changelog_entries_pformat': [
+                textwrap.dedent("""\
+                    <section ids="version-1-0" names="version\\ 1.0">
+                        <title>
+                            Version 1.0
+                        <field_list>
+                            <field>
+                                <field_name>
+                                    Released
+                                <field_body>
+                                    <paragraph>
+                                        2009-01-01
+                            <field>
+                                <field_name>
+                                    Maintainer
+                                <field_body>
+                                    <paragraph>
+                                        Foo Bar <
+                                        <reference
+                                        refuri="mailto:foo.bar@example.org">
+                                            foo.bar@example.org
+                                        >
+                        <bullet_list bullet="*">
+                            <list_item>
+                                <paragraph>
+                                    Lorem ipsum dolor sit amet.
+                    """),
+                textwrap.dedent("""\
+                    <section ids="version-0-8" names="version\\ 0.8">
+                        <title>
+                            version 0.8
+                        <field_list>
+                            <field>
+                                <field_name>
+                                    Released
+                                <field_body>
+                                    <paragraph>
+                                        2004-01-01
+                            <field>
+                                <field_name>
+                                    Maintainer
+                                <field_body>
+                                    <paragraph>
+                                        Foo Bar <
+                                        <reference
+                                        refuri="mailto:foo.bar@example.org">
+                                            foo.bar@example.org
+                                        >
+                        <bullet_list bullet="*">
+                            <list_item>
+                                <paragraph>
+                                    Donec venenatis nisl aliquam ipsum.
+                    """),
+                textwrap.dedent("""\
+                    <section ids="version-0-7-2" names="version\\ 0.7.2">
+                        <title>
+                            Version 0.7.2
+                        <field_list>
+                            <field>
+                                <field_name>
+                                    Released
+                                <field_body>
+                                    <paragraph>
+                                        2001-01-01
+                            <field>
+                                <field_name>
+                                    Maintainer
+                                <field_body>
+                                    <paragraph>
+                                        Foo Bar <
+                                        <reference
+                                        refuri="mailto:foo.bar@example.org">
+                                            foo.bar@example.org
+                                        >
+                        <bullet_list bullet="*">
+                            <list_item>
+                                <paragraph>
+                                    Pellentesque elementum mollis finibus.
+                    """),
+            ],
             'expected_versions_text': [
                 "1.0",
                 "0.8",
@@ -902,6 +1451,34 @@ def make_rest_document_test_scenarios():
             ],
             'expected_changelog_entries_title_text': [
                 "Version 1.0",
+            ],
+            'expected_changelog_entries_pformat': [
+                textwrap.dedent("""\
+                    <section ids="version-1-0" names="version\\ 1.0">
+                        <title>
+                            Version 1.0
+                        <field_list>
+                            <field>
+                                <field_name>
+                                    Released
+                                <field_body>
+                                    <paragraph>
+                                        2009-01-01
+                            <field>
+                                <field_name>
+                                    Maintainer
+                                <field_body>
+                                    <paragraph>
+                                        Foo Bar <
+                                        <reference
+                                        refuri="mailto:foo.bar@example.org">
+                                            foo.bar@example.org
+                                        >
+                        <bullet_list bullet="*">
+                            <list_item>
+                                <paragraph>
+                                    Lorem ipsum dolor sit amet.
+                    """),
             ],
             'expected_versions_text': [
                 "1.0",
@@ -967,6 +1544,86 @@ def make_rest_document_test_scenarios():
                 "version 0.8",
                 "Version 0.7.2",
             ],
+            'expected_changelog_entries_pformat': [
+                textwrap.dedent("""\
+                    <section ids="version-1-0" names="version\\ 1.0">
+                        <title>
+                            Version 1.0
+                        <field_list>
+                            <field>
+                                <field_name>
+                                    Released
+                                <field_body>
+                                    <paragraph>
+                                        2009-01-01
+                            <field>
+                                <field_name>
+                                    Maintainer
+                                <field_body>
+                                    <paragraph>
+                                        Foo Bar <
+                                        <reference
+                                        refuri="mailto:foo.bar@example.org">
+                                            foo.bar@example.org
+                                        >
+                        <bullet_list bullet="*">
+                            <list_item>
+                                <paragraph>
+                                    Lorem ipsum dolor sit amet.
+                    """),
+                textwrap.dedent("""\
+                    <section ids="version-0-8" names="version\\ 0.8">
+                        <title>
+                            version 0.8
+                        <field_list>
+                            <field>
+                                <field_name>
+                                    Released
+                                <field_body>
+                                    <paragraph>
+                                        2004-01-01
+                            <field>
+                                <field_name>
+                                    Maintainer
+                                <field_body>
+                                    <paragraph>
+                                        Foo Bar <
+                                        <reference
+                                        refuri="mailto:foo.bar@example.org">
+                                            foo.bar@example.org
+                                        >
+                        <bullet_list bullet="*">
+                            <list_item>
+                                <paragraph>
+                                    Donec venenatis nisl aliquam ipsum.
+                    """),
+                textwrap.dedent("""\
+                    <section ids="version-0-7-2" names="version\\ 0.7.2">
+                        <title>
+                            Version 0.7.2
+                        <field_list>
+                            <field>
+                                <field_name>
+                                    Released
+                                <field_body>
+                                    <paragraph>
+                                        2001-01-01
+                            <field>
+                                <field_name>
+                                    Maintainer
+                                <field_body>
+                                    <paragraph>
+                                        Foo Bar <
+                                        <reference
+                                        refuri="mailto:foo.bar@example.org">
+                                            foo.bar@example.org
+                                        >
+                        <bullet_list bullet="*">
+                            <list_item>
+                                <paragraph>
+                                    Pellentesque elementum mollis finibus.
+                    """),
+            ],
             'expected_versions_text': [
                 "1.0",
                 "0.8",
@@ -974,6 +1631,13 @@ def make_rest_document_test_scenarios():
             ],
         }),
     ]
+
+    for (__, scenario) in scenarios:
+        scenario['expected_versions'] = [
+            semver.Version.parse(version_text, optional_minor_and_patch=True)
+            for version_text in scenario['expected_versions_text']
+        ]
+
     return scenarios
 
 
@@ -1291,6 +1955,52 @@ class DoctreePformatValueMismatch(testtools.matchers.Mismatch):
             """).format(
                 expected=self.expected_value, actual=self.actual_value)
         return text
+
+
+class get_changelog_entry_nodes_from_document_TestCase(
+        testscenarios.WithScenarios, testtools.TestCase):
+    """ Test cases for ‘get_changelog_entry_nodes_from_document’ function. """
+
+    function_to_test = staticmethod(
+        chug.parsers.rest.get_changelog_entry_nodes_from_document)
+
+    scenarios = make_rest_document_test_scenarios()
+
+    def setUp(self):
+        """ Set up fixtures for this test case. """
+        super().setUp()
+
+        self.test_document = docutils.core.publish_doctree(
+            self.test_document_text)
+        self.test_args = [self.test_document]
+
+    @staticmethod
+    def normalise_whitespace_to_single_space(text):
+        """ Return normalised rendition of `text` with single space.
+
+            :param text: The text value to normalise.
+            :return: The normalised text.
+
+            The rendition replaces each sequence of characters matching
+            '[\n\t ]+' with a single U+0020 SPACE.
+            """
+        normalised_text = " ".join((
+            text.replace("\n", " ").replace("\t", " ")
+        ).split())
+        return normalised_text
+
+    def test_returns_nodes_with_expected_node_ids(self):
+        """ Should return nodes values with expected 'ids' node attributes. """
+        with make_expected_error_context(self):
+            result = self.function_to_test(*self.test_args)
+        if hasattr(self, 'expected_changelog_entries_pformat'):
+            for (expected_pformat, node) in zip(
+                    self.expected_changelog_entries_pformat,
+                    result,
+                    strict=True,
+            ):
+                self.assertThat(
+                    node.pformat(), DoctreePformatEqual(expected_pformat))
 
 
 # Copyright © 2008–2024 Ben Finney <ben+python@benfinney.id.au>
