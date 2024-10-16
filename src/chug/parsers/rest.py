@@ -26,6 +26,31 @@ def parse_rest_document_from_text(document_text):
     return document
 
 
+def verify_is_docutils_node(node, *, node_type=docutils.nodes.Node):
+    """ Verify that `node` is a Docutils node of type `node_type`.
+
+        :param node: The object to inspect.
+        :param node_type: The Docutils node type, or a `tuple of types, for
+            which to test.
+        :return: ``None``.
+        :raises TypeError: If `node` is not an instance of
+            `docutils.nodes.Node`.
+        """
+    node_type_text = (
+        "({})".format(", ".join(
+            "‘{}’".format(item.__name__) for item in node_type))
+        if isinstance(node_type, tuple)
+        else "‘{}’".format(node_type.__name__))
+    message = (
+        # The caller did not specify anything more specific than `Node`.
+        "not a Docutils node: {node!r}" if (node_type == docutils.nodes.Node)
+        # Name the node type specified by the caller.
+        else "not a Docutils node of type {type_text}: {node!r}"
+    ).format(node=node, type_text=node_type_text)
+    if not isinstance(node, node_type):
+        raise TypeError(message)
+
+
 def get_node_text(node):
     """ Get the child text of the `node`.
 

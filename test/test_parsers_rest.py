@@ -99,6 +99,102 @@ class parse_rest_document_from_text_TestCase(
             self.assertEqual(expected_result, result)
 
 
+class verify_is_docutils_node_TestCase(
+        testscenarios.WithScenarios, testtools.TestCase):
+    """ Test cases for ‘verify_is_docutils_node’ function. """
+
+    function_to_test = staticmethod(chug.parsers.rest.verify_is_docutils_node)
+
+    scenarios = [
+        ('arbitrary-node', {
+            'test_args': [docutils.nodes.Element()],
+            'test_kwargs': {},
+            'expected_result': None,
+        }),
+        ('arbitrary-node node-type-title', {
+            'test_args': [docutils.nodes.Element()],
+            'test_kwargs': {
+                'node_type': docutils.nodes.title,
+            },
+            'expected_error': TypeError,
+            'expected_error_message_regex': ".+ Docutils node of type ‘title’",
+        }),
+        ('paragraph-node', {
+            'test_args': [docutils.nodes.paragraph("")],
+            'test_kwargs': {},
+            'expected_result': None,
+        }),
+        ('paragraph-node node-type-paragraph', {
+            'test_args': [docutils.nodes.paragraph("")],
+            'test_kwargs': {
+                'node_type': docutils.nodes.paragraph,
+            },
+            'expected_result': None,
+        }),
+        ('paragraph-node node-type-title', {
+            'test_args': [docutils.nodes.paragraph("")],
+            'test_kwargs': {
+                'node_type': docutils.nodes.title,
+            },
+            'expected_error': TypeError,
+            'expected_error_message_regex': ".+ Docutils node of type ‘title’",
+        }),
+        ('paragraph-node node-types-section-or-document', {
+            'test_args': [docutils.nodes.paragraph("")],
+            'test_kwargs': {
+                'node_type': (docutils.nodes.section, docutils.nodes.document),
+            },
+            'expected_error': TypeError,
+            'expected_error_message_regex': (
+                r".+ Docutils node of type \(‘section’, ‘document’\)"),
+        }),
+        ('document-node', {
+            'test_args': [
+                docutils.nodes.document(settings=None, reporter=None)],
+            'test_kwargs': {},
+            'expected_result': None,
+        }),
+        ('document-node node-type-document', {
+            'test_args': [
+                docutils.nodes.document(settings=None, reporter=None)],
+            'test_kwargs': {
+                'node_type': docutils.nodes.document,
+            },
+            'expected_result': None,
+        }),
+        ('document-node node-type-title', {
+            'test_args': [
+                docutils.nodes.document(settings=None, reporter=None)],
+            'test_kwargs': {
+                'node_type': docutils.nodes.title,
+            },
+            'expected_error': TypeError,
+            'expected_error_message_regex': ".+ Docutils node of type ‘title’",
+        }),
+        ('not-a-node', {
+            'test_args': [object()],
+            'test_kwargs': {},
+            'expected_error': TypeError,
+            'expected_error_message_regex': ".+ Docutils node",
+        }),
+        ('not-a-node node-type-title', {
+            'test_args': [object()],
+            'test_kwargs': {
+                'node_type': docutils.nodes.title,
+            },
+            'expected_error': TypeError,
+            'expected_error_message_regex': ".+ Docutils node of type ‘title’",
+        }),
+    ]
+
+    def test_returns_expected_result_or_raises_expected_error(self):
+        """ Should return expected result or raise expected error. """
+        with make_expected_error_context(self):
+            result = self.function_to_test(*self.test_args, **self.test_kwargs)
+        if hasattr(self, 'expected_result'):
+            self.assertEqual(self.expected_result, result)
+
+
 class get_node_text_TestCase(
         testscenarios.WithScenarios, testtools.TestCase):
     """ Test cases for ‘get_node_text’ function. """
