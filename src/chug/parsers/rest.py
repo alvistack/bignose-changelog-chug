@@ -155,6 +155,46 @@ def get_version_text_from_changelog_entry(entry_node):
     version_text = core.get_version_text_from_entry_title(title_text)
     return version_text
 
+
+def get_changelog_entry_title_from_node(entry_node):
+    """ Get the title of the change log entry, from `entry_node`.
+
+        :param entry_node: The `docutils.nodes.Node` representing the change
+            log entry.
+        :return: The title (text) that is the change log entry title.
+        :raises ValueError: If the `node` has no `Text` child node.
+
+        Because of how Docutils treats some document structures specially, the
+        actual title of the change log entry might be in different places.
+
+        For a regular `section`, the child `title` node contains the title.
+        If the change log entry happens to be the whole document, the title
+        might be in the `title` child or the `subtitle` child.
+        """
+    entry_title = None
+    entry_title_match = False
+    try:
+        entry_title = get_node_title_text(entry_node)
+        core.verify_is_change_log_entry_title(entry_title)
+        entry_title_match = True
+    except (ValueError, core.ChangeLogEntryTitleFormatInvalidError):
+        # No direct ‘title’ text matches.
+        if isinstance(entry_node, docutils.nodes.document):
+            try:
+                entry_title = get_document_subtitle_text(entry_node)
+                core.verify_is_change_log_entry_title(entry_title)
+                entry_title_match = True
+            except (ValueError, core.ChangeLogEntryTitleFormatInvalidError):
+                # The document subtitle also doesn't match.
+                # Nothing more to try.
+                pass
+    if not entry_title_match:
+        # No title found in the expected places matched the expected Change Log
+        # entry title pattern.
+        raise ValueError(
+            "no change log entry title found: {!r}".format(entry_node))
+    return entry_title
+
 
 # Copyright © 2008–2024 Ben Finney <ben+python@benfinney.id.au>
 #

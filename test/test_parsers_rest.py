@@ -7,6 +7,7 @@
 
 """ Test cases for ‘chug.parsers.rest’ module. """
 
+import itertools
 import textwrap
 import unittest.mock
 
@@ -329,6 +330,12 @@ def make_rest_document_test_scenarios():
             'expected_document_title_text': "Version 1.0",
             'expected_document_subtitle_text_error': ValueError,
             'expected_sections_title_text': [],
+            'expected_changelog_entries_node_id': [
+                "version-1-0",
+            ],
+            'expected_changelog_entries_title_text': [
+                "Version 1.0",
+            ],
             'expected_versions_text': [
                 "1.0",
             ],
@@ -370,6 +377,16 @@ def make_rest_document_test_scenarios():
                 "version 0.8",
                 "Version 0.7.2",
             ],
+            'expected_changelog_entries_node_id': [
+                "version-1-0",
+                "version-0-8",
+                "version-0-7-2",
+            ],
+            'expected_changelog_entries_title_text': [
+                "Version 1.0",
+                "version 0.8",
+                "Version 0.7.2",
+            ],
             'expected_versions_text': [
                 "1.0",
                 "0.8",
@@ -393,6 +410,12 @@ def make_rest_document_test_scenarios():
             'expected_document_title_text_error': ValueError,
             'expected_document_subtitle_text_error': ValueError,
             'expected_sections_title_text': [
+                "Version 1.0",
+            ],
+            'expected_changelog_entries_node_id': [
+                "version-1-0",
+            ],
+            'expected_changelog_entries_title_text': [
                 "Version 1.0",
             ],
             'expected_versions_text': [
@@ -439,6 +462,16 @@ def make_rest_document_test_scenarios():
                 "version 0.8",
                 "Version 0.7.2",
             ],
+            'expected_changelog_entries_node_id': [
+                "version-1-0",
+                "version-0-8",
+                "version-0-7-2",
+            ],
+            'expected_changelog_entries_title_text': [
+                "Version 1.0",
+                "version 0.8",
+                "Version 0.7.2",
+            ],
             'expected_versions_text': [
                 "1.0",
                 "0.8",
@@ -468,6 +501,12 @@ def make_rest_document_test_scenarios():
             'expected_document_title_text': "Felis gravida lacinia",
             'expected_document_subtitle_text': "Version 1.0",
             'expected_sections_title_text': [],
+            'expected_changelog_entries_node_id': [
+                "version-1-0",
+            ],
+            'expected_changelog_entries_title_text': [
+                "Version 1.0",
+            ],
             'expected_versions_text': [
                 "1.0",
             ],
@@ -516,6 +555,16 @@ def make_rest_document_test_scenarios():
                 "version 0.8",
                 "Version 0.7.2",
             ],
+            'expected_changelog_entries_node_id': [
+                "version-1-0",
+                "version-0-8",
+                "version-0-7-2",
+            ],
+            'expected_changelog_entries_title_text': [
+                "Version 1.0",
+                "version 0.8",
+                "Version 0.7.2",
+            ],
             'expected_versions_text': [
                 "1.0",
                 "0.8",
@@ -546,6 +595,12 @@ def make_rest_document_test_scenarios():
             'expected_document_title_text': "Felis gravida lacinia",
             'expected_document_subtitle_text_error': ValueError,
             'expected_sections_title_text': [
+                "Version 1.0",
+            ],
+            'expected_changelog_entries_node_id': [
+                "version-1-0",
+            ],
+            'expected_changelog_entries_title_text': [
                 "Version 1.0",
             ],
             'expected_versions_text': [
@@ -598,6 +653,16 @@ def make_rest_document_test_scenarios():
                 "version 0.8",
                 "Version 0.7.2",
             ],
+            'expected_changelog_entries_node_id': [
+                "version-1-0",
+                "version-0-8",
+                "version-0-7-2",
+            ],
+            'expected_changelog_entries_title_text': [
+                "Version 1.0",
+                "version 0.8",
+                "Version 0.7.2",
+            ],
             'expected_versions_text': [
                 "1.0",
                 "0.8",
@@ -634,7 +699,14 @@ def make_rest_document_test_scenarios():
             'expected_sections_title_text': [
                 "Tempus lorem aliquet",
             ],
+            'expected_changelog_entries_node_id': [
+                "felis-gravida-lacinia",
+            ],
+            'expected_changelog_entries_title_text': [
+                "Felis gravida lacinia",
+            ],
             'expected_versions_text': [],
+            'expected_error': ValueError,
         }),
         ('document-title top-sections-three changelog-format-invalid', {
             'test_document_text': textwrap.dedent("""\
@@ -684,7 +756,14 @@ def make_rest_document_test_scenarios():
             'expected_sections_title_text': [
                 "Tempus lorem aliquet",
             ],
+            'expected_changelog_entries_node_id': [
+                "felis-gravida-lacinia",
+            ],
+            'expected_changelog_entries_title_text': [
+                "Felis gravida lacinia",
+            ],
             'expected_versions_text': [],
+            'expected_error': ValueError,
         }),
         ('document-title-and-subtitle entries-one', {
             'test_document_text': textwrap.dedent("""\
@@ -712,6 +791,12 @@ def make_rest_document_test_scenarios():
             'expected_document_title_text': "Felis gravida lacinia",
             'expected_document_subtitle_text': "Tempus lorem aliquet",
             'expected_sections_title_text': [
+                "Version 1.0",
+            ],
+            'expected_changelog_entries_node_id': [
+                "version-1-0",
+            ],
+            'expected_changelog_entries_title_text': [
                 "Version 1.0",
             ],
             'expected_versions_text': [
@@ -766,6 +851,16 @@ def make_rest_document_test_scenarios():
                 "version 0.8",
                 "Version 0.7.2",
             ],
+            'expected_changelog_entries_node_id': [
+                "version-1-0",
+                "version-0-8",
+                "version-0-7-2",
+            ],
+            'expected_changelog_entries_title_text': [
+                "Version 1.0",
+                "version 0.8",
+                "Version 0.7.2",
+            ],
             'expected_versions_text': [
                 "1.0",
                 "0.8",
@@ -800,6 +895,12 @@ def make_rest_document_test_scenarios():
             'expected_document_title_text': "Felis gravida lacinia",
             'expected_document_subtitle_text': "Tempus lorem aliquet",
             'expected_sections_title_text': [
+                "Version 1.0",
+            ],
+            'expected_changelog_entries_node_id': [
+                "version-1-0",
+            ],
+            'expected_changelog_entries_title_text': [
                 "Version 1.0",
             ],
             'expected_versions_text': [
@@ -852,6 +953,16 @@ def make_rest_document_test_scenarios():
             'expected_document_title_text': "Felis gravida lacinia",
             'expected_document_subtitle_text': "Tempus lorem aliquet",
             'expected_sections_title_text': [
+                "Version 1.0",
+                "version 0.8",
+                "Version 0.7.2",
+            ],
+            'expected_changelog_entries_node_id': [
+                "version-1-0",
+                "version-0-8",
+                "version-0-7-2",
+            ],
+            'expected_changelog_entries_title_text': [
                 "Version 1.0",
                 "version 0.8",
                 "Version 0.7.2",
@@ -1070,6 +1181,66 @@ class get_version_text_from_changelog_entry_TestCase(
                 test_args = [test_entry_node]
                 result = self.function_to_test(*test_args)
             self.assertEqual(expected_version_text, result)
+
+
+class get_changelog_entry_title_from_node_TestCase(
+        testscenarios.WithScenarios, testtools.TestCase):
+    """ Test cases for ‘get_version_text_from_changelog_entry’ function. """
+
+    function_to_test = staticmethod(
+        chug.parsers.rest.get_changelog_entry_title_from_node)
+
+    scenarios = make_rest_document_test_scenarios()
+
+    def setUp(self):
+        """ Set up fixtures for this test case. """
+        super().setUp()
+
+        self.test_document = docutils.core.publish_doctree(
+            self.test_document_text)
+
+    def make_test_entry_node_by_node_id(self, expected_title_by_node_id):
+        """
+        Make the mapping `{node_id: test_entry_node}` for this test case.
+        """
+        test_entry_node_by_node_id = dict()
+        for node_id in expected_title_by_node_id:
+            for candidate_node in itertools.chain(
+                    [self.test_document],
+                    self.test_document.children):
+                if (
+                        candidate_node.get('ids')
+                        and (
+                            next(iter(candidate_node.get('ids'))) == node_id
+                        )
+                ):
+                    test_entry_node = (
+                        candidate_node.parent if isinstance(
+                            candidate_node, docutils.nodes.subtitle)
+                        else candidate_node)
+                    test_entry_node_by_node_id[node_id] = test_entry_node
+        return test_entry_node_by_node_id
+
+    def test_returns_expected_result_or_raises_expected_error(self):
+        """ Should return expected result or raise expected error. """
+        expected_title_by_node_id = dict(zip(
+            self.expected_changelog_entries_node_id,
+            self.expected_changelog_entries_title_text,
+            strict=True,
+        ))
+        test_entry_node_by_node_id = self.make_test_entry_node_by_node_id(
+            expected_title_by_node_id)
+        for (
+                test_node_id,
+                test_entry_node
+        ) in test_entry_node_by_node_id.items():
+            with self.subTest(node_id=test_node_id):
+                test_args = [test_entry_node]
+                with make_expected_error_context(self):
+                    result = self.function_to_test(*test_args)
+                if not hasattr(self, 'expected_error'):
+                    expected_result = expected_title_by_node_id[test_node_id]
+                    self.assertEqual(expected_result, result)
 
 
 # Copyright © 2008–2024 Ben Finney <ben+python@benfinney.id.au>
