@@ -58,8 +58,7 @@ def get_node_text(node):
         :return: The child text of `node`, or ``None`` if absent.
         :raises TypeError: If the `node` is not a `docutils.nodes.Node`.
         """
-    if not isinstance(node, docutils.nodes.Node):
-        raise TypeError("not a Docutils node: {!r}".format(node))
+    verify_is_docutils_node(node)
     node_text_children = (
         [
             child_node for child_node in node.children
@@ -81,8 +80,7 @@ def get_node_title_text(node):
             ``None`` if absent.
         :raises TypeError: If the `node` is not a `docutils.nodes.Node`.
         """
-    if not isinstance(node, docutils.nodes.Node):
-        raise TypeError("not a Docutils node: {!r}".format(node))
+    verify_is_docutils_node(node)
     title_nodes = [
         child_node for child_node in node.children
         if isinstance(child_node, docutils.nodes.title)]
@@ -103,9 +101,7 @@ def get_document_title_text(rest_document):
         :raises TypeError: If the `rest_document` is not a
             `docutils.nodes.document`.
         """
-    if not isinstance(rest_document, docutils.nodes.document):
-        raise TypeError(
-            "not a Docutils document root: {!r}".format(rest_document))
+    verify_is_docutils_node(rest_document, node_type=docutils.nodes.document)
     result = get_node_title_text(rest_document)
     return result
 
@@ -120,9 +116,7 @@ def get_document_subtitle_text(rest_document):
         :raises TypeError: If the `rest_document` is not a
             `docutils.nodes.document`.
         """
-    if not isinstance(rest_document, docutils.nodes.document):
-        raise TypeError(
-            "not a Docutils document root: {!r}".format(rest_document))
+    verify_is_docutils_node(rest_document, node_type=docutils.nodes.document)
     subtitle_nodes = [
         child_node for child_node in rest_document.children
         if isinstance(child_node, docutils.nodes.subtitle)]
@@ -142,9 +136,7 @@ def get_top_level_sections(rest_document):
         :raises TypeError: If the `rest_document` is not a
             `docutils.nodes.document`.
         """
-    if not isinstance(rest_document, docutils.nodes.document):
-        raise TypeError(
-            "not a Docutils document root: {!r}".format(rest_document))
+    verify_is_docutils_node(rest_document, node_type=docutils.nodes.document)
     sections = (
         node for node in rest_document.children
         if isinstance(node, docutils.nodes.section))
