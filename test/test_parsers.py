@@ -7,6 +7,7 @@
 
 """ Test cases for ‘chug.parsers’ package. """
 
+import re
 import textwrap
 import unittest.mock
 
@@ -14,6 +15,10 @@ import testscenarios
 import testtools
 
 import chug.parsers
+from chug.parsers.core import ChangeLogEntryTitleFormatInvalidError
+import chug.parsers.core
+
+from . import make_expected_error_context
 
 
 class FakeNode:
@@ -202,6 +207,95 @@ class get_changelog_document_text_TestCase(
         expected_result = self.test_infile_text
         result = chug.parsers.get_changelog_document_text(*self.test_args)
         self.assertEqual(expected_result, result)
+
+
+def make_change_log_entry_title_scenarios():
+    """ Make a sequence of scenarios for testing Change Log entry titles.
+
+        :return: Sequence of tuples `(name, parameters)`. Each is a scenario
+            as specified for `testscenarios`.
+        """
+    scenarios = [
+        ('title-case', {
+            'test_args': ["Version 1.0"],
+            'test_kwargs': {},
+            'expected_result': "1.0",
+        }),
+        ('lower-case', {
+            'test_args': ["version 1.0"],
+            'test_kwargs': {},
+            'expected_result': "1.0",
+        }),
+        ('upper-case', {
+            'test_args': ["VERSION 1.0"],
+            'test_kwargs': {},
+            'expected_result': "1.0",
+        }),
+        ('title-case regex-custom', {
+            'test_args': ["Release 1.0"],
+            'test_kwargs': {
+                'regex_pattern': re.compile(
+                    r"^release (?P<version>[\w.-]+)$",
+                    re.IGNORECASE),
+            },
+            'expected_result': "1.0",
+        }),
+        ('version-complex', {
+            'test_args': ["Version 4.0.17-alpha12"],
+            'test_kwargs': {},
+            'expected_result': "4.0.17-alpha12",
+        }),
+        ('empty', {
+            'test_args': [""],
+            'test_kwargs': {},
+            'expected_error': ChangeLogEntryTitleFormatInvalidError,
+        }),
+        ('version-invalid', {
+            'test_args': ["Version b%g^s"],
+            'test_kwargs': {},
+            'expected_error': ChangeLogEntryTitleFormatInvalidError,
+        }),
+        ('title-invalid', {
+            'test_args': ["Elit Aliquam Ipsum"],
+            'test_kwargs': {},
+            'expected_error': ChangeLogEntryTitleFormatInvalidError,
+        }),
+        ('version-invalid regex-custom', {
+            'test_args': ["Release b%g^s"],
+            'test_kwargs': {
+                'regex_pattern': re.compile(
+                    r"^release (?P<version>[\w.-]+)$",
+                    re.IGNORECASE),
+            },
+            'expected_error': ChangeLogEntryTitleFormatInvalidError,
+        }),
+        ('title-invalid', {
+            'test_args': ["Elit Aliquam Ipsum"],
+            'test_kwargs': {},
+            'expected_error': ChangeLogEntryTitleFormatInvalidError,
+        }),
+        ('not-text', {
+            'test_args': [object()],
+            'test_kwargs': {},
+            'expected_error': TypeError,
+        }),
+    ]
+    return scenarios
+
+
+class verify_is_change_log_entry_title_TestCase(
+        testscenarios.WithScenarios, testtools.TestCase):
+    """ Test cases for ‘verify_is_change_log_entry_title’ function. """
+
+    function_to_test = staticmethod(
+        chug.parsers.core.verify_is_change_log_entry_title)
+
+    scenarios = make_change_log_entry_title_scenarios()
+
+    def test_returns_expected_result_or_raises_error(self):
+        """ Should return or raise expected result or exception. """
+        with make_expected_error_context(self):
+            self.function_to_test(*self.test_args, **self.test_kwargs)
 
 
 # Copyright © 2008–2024 Ben Finney <ben+python@benfinney.id.au>

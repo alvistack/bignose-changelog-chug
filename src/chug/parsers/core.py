@@ -85,6 +85,28 @@ entry_title_regex = re.compile(
     re.IGNORECASE)
 """ Regular Expression pattern to match a change log entry title. """
 
+
+class ChangeLogEntryTitleFormatInvalidError(ValueError):
+    """ Raised when entry title text does not match expected pattern. """
+
+
+def verify_is_change_log_entry_title(
+        title,
+        *,
+        regex_pattern=entry_title_regex,
+):
+    """ Verify that `title` is a valid Change Log entry title.
+
+        :param title: The title (text) of the change log entry to query.
+        :param regex_pattern: The compiled `re.Pattern` instance to use for
+            matching the `title` text.
+        :return: The version text parsed from `title`.
+        :raises ChangeLogEntryTitleFormatInvalidError: If `title` does
+            not match the expected title format.
+        """
+    if regex_pattern.match(title) is None:
+        raise ChangeLogEntryTitleFormatInvalidError(title)
+
 
 # Copyright © 2008–2024 Ben Finney <ben+python@benfinney.id.au>
 #
