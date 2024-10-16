@@ -218,6 +218,10 @@ class get_node_text_TestCase(
             'expected_result': (
                 "Maecenas feugiat nibh sed enim fringilla faucibus."),
         }),
+        ('node-without-text', {
+            'test_args': [docutils.nodes.decoration()],
+            'expected_error': ValueError,
+        }),
         ('not-a-node', {
             'test_args': [object()],
             'expected_error': TypeError,
@@ -266,7 +270,7 @@ class get_node_title_text_TestCase(
             'test_args': [next(
                 node for node in test_document.children
                 if isinstance(node, docutils.nodes.paragraph))],
-            'expected_result': None,
+            'expected_error': ValueError,
         }),
         ('not-a-node', {
             'test_args': [object()],
@@ -323,7 +327,7 @@ def make_rest_document_test_scenarios():
             # <URL:https://docutils.sourceforge.io/docs/user/rst/quickref.html>
             # Therefore there are no top-level `section` nodes.
             'expected_document_title_text': "Version 1.0",
-            'expected_document_subtitle_text': None,
+            'expected_document_subtitle_text_error': ValueError,
             'expected_sections_title_text': [],
             'expected_versions_text': [
                 "1.0",
@@ -359,8 +363,8 @@ def make_rest_document_test_scenarios():
                 """),
             # There are three sibling top-level sections. Therefore they are
             # not treated specially.
-            'expected_document_title_text': None,
-            'expected_document_subtitle_text': None,
+            'expected_document_title_text_error': ValueError,
+            'expected_document_subtitle_text_error': ValueError,
             'expected_sections_title_text': [
                 "Version 1.0",
                 "version 0.8",
@@ -386,8 +390,8 @@ def make_rest_document_test_scenarios():
                 """),
             # The section is not alone at the top level (the preamble paragraph
             # is its sibling). Therefore the section is not treated specially.
-            'expected_document_title_text': None,
-            'expected_document_subtitle_text': None,
+            'expected_document_title_text_error': ValueError,
+            'expected_document_subtitle_text_error': ValueError,
             'expected_sections_title_text': [
                 "Version 1.0",
             ],
@@ -428,8 +432,8 @@ def make_rest_document_test_scenarios():
             # The sections are not alone at the top level (the preamble
             # paragraph is a sibling). Therefore the sections are not treated
             # specially.
-            'expected_document_title_text': None,
-            'expected_document_subtitle_text': None,
+            'expected_document_title_text_error': ValueError,
+            'expected_document_subtitle_text_error': ValueError,
             'expected_sections_title_text': [
                 "Version 1.0",
                 "version 0.8",
@@ -506,7 +510,7 @@ def make_rest_document_test_scenarios():
             # <URL:https://docutils.sourceforge.io/docs/user/rst/quickref.html>
             # Therefore the subsequent sections are the top-level `section`s.
             'expected_document_title_text': "Felis gravida lacinia",
-            'expected_document_subtitle_text': None,
+            'expected_document_subtitle_text_error': ValueError,
             'expected_sections_title_text': [
                 "Version 1.0",
                 "version 0.8",
@@ -540,7 +544,7 @@ def make_rest_document_test_scenarios():
             # <URL:https://docutils.sourceforge.io/docs/user/rst/quickref.html>
             # Therefore the subsequent section is the top-level `section`.
             'expected_document_title_text': "Felis gravida lacinia",
-            'expected_document_subtitle_text': None,
+            'expected_document_subtitle_text_error': ValueError,
             'expected_sections_title_text': [
                 "Version 1.0",
             ],
@@ -588,7 +592,7 @@ def make_rest_document_test_scenarios():
             # <URL:https://docutils.sourceforge.io/docs/user/rst/quickref.html>
             # Therefore the subsequent sections are the top-level `section`s.
             'expected_document_title_text': "Felis gravida lacinia",
-            'expected_document_subtitle_text': None,
+            'expected_document_subtitle_text_error': ValueError,
             'expected_sections_title_text': [
                 "Version 1.0",
                 "version 0.8",
@@ -626,7 +630,7 @@ def make_rest_document_test_scenarios():
             # and another section. The section is a single top-level `section`.
             # The resulting document has no changelog entries at the top level.
             'expected_document_title_text': "Felis gravida lacinia",
-            'expected_document_subtitle_text': None,
+            'expected_document_subtitle_text_error': ValueError,
             'expected_sections_title_text': [
                 "Tempus lorem aliquet",
             ],
@@ -676,7 +680,7 @@ def make_rest_document_test_scenarios():
             # and another section. The section is a single top-level `section`.
             # The resulting document has no changelog entries at the top level.
             'expected_document_title_text': "Felis gravida lacinia",
-            'expected_document_subtitle_text': None,
+            'expected_document_subtitle_text_error': ValueError,
             'expected_sections_title_text': [
                 "Tempus lorem aliquet",
             ],
@@ -905,9 +909,18 @@ class get_document_title_text_TestCase(
         self.test_args = [self.test_document]
 
     def test_result_is_expected_title_text(self):
-        """ Should return the expected text of document's `title`. """
-        result = self.function_to_test(*self.test_args)
-        self.assertEqual(self.expected_document_title_text, result)
+        """
+        Should return the expected text of document's `title`, or raise error.
+        """
+        with make_expected_error_context(
+                self,
+                expected_error_attr_name='expected_document_title_text_error',
+                expected_error_message_regex_attr_name=(
+                    'expected_document_title_text_error_regex')
+        ):
+            result = self.function_to_test(*self.test_args)
+        if hasattr(self, 'expected_document_title_text'):
+            self.assertEqual(self.expected_document_title_text, result)
 
 
 class get_document_title_text_ErrorTestCase(
@@ -943,9 +956,19 @@ class get_document_subtitle_text_TestCase(
         self.test_args = [self.test_document]
 
     def test_result_is_expected_document_subtitle_text(self):
-        """ Should return the expected text of document's `subtitle`. """
-        result = self.function_to_test(*self.test_args)
-        self.assertEqual(self.expected_document_subtitle_text, result)
+        """
+        Should return the expected text of document's `subtitle`, or error.
+        """
+        with make_expected_error_context(
+                self,
+                expected_error_attr_name=(
+                    'expected_document_subtitle_text_error'),
+                expected_error_message_regex_attr_name=(
+                    'expected_document_subtitle_text_error_regex')
+        ):
+            result = self.function_to_test(*self.test_args)
+        if hasattr(self, 'expected_document_subtitle_text'):
+            self.assertEqual(self.expected_document_subtitle_text, result)
 
 
 class get_document_subtitle_text_ErrorTestCase(
