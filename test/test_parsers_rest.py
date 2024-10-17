@@ -1860,6 +1860,25 @@ def has_matching_node_id(node, node_id):
     return result
 
 
+def get_nodes_matching_node_id(nodes, node_id):
+    """ Get the nodes from `nodes` with identifier matching `node_id`.
+
+        :param nodes: The collection of `docutils.nodes.Node` to query.
+        :param node_id: The node identifier (text) to match.
+        :return: Sequence of nodes whose 'ids' attribute contains a match for
+            `node_id`.
+        :raises ValueError: If no child node matches `node_id`.
+        """
+    matching_nodes = [
+        node for node in nodes
+        if has_matching_node_id(node, node_id)]
+    if not matching_nodes:
+        raise ValueError(
+            "no match for {node_id!r} in {nodes!r}".format(
+                nodes=nodes, node_id=node_id))
+    return matching_nodes
+
+
 class get_changelog_entry_title_from_node_TestCase(
         testscenarios.WithScenarios, testtools.TestCase):
     """ Test cases for ‘get_version_text_from_changelog_entry’ function. """
@@ -1882,15 +1901,17 @@ class get_changelog_entry_title_from_node_TestCase(
         """
         test_entry_node_by_node_id = dict()
         for node_id in expected_title_by_node_id:
-            for candidate_node in itertools.chain(
-                    [self.test_document],
-                    self.test_document.children):
-                if has_matching_node_id(candidate_node, node_id):
-                    test_entry_node = (
-                        candidate_node.parent if isinstance(
-                            candidate_node, docutils.nodes.subtitle)
-                        else candidate_node)
-                    test_entry_node_by_node_id[node_id] = test_entry_node
+            for candidate_node in get_nodes_matching_node_id(
+                    nodes=itertools.chain(
+                        [self.test_document],
+                        self.test_document.children),
+                    node_id=node_id
+            ):
+                test_entry_node = (
+                    candidate_node.parent if isinstance(
+                        candidate_node, docutils.nodes.subtitle)
+                    else candidate_node)
+                test_entry_node_by_node_id[node_id] = test_entry_node
         return test_entry_node_by_node_id
 
     def test_returns_expected_result_or_raises_expected_error(self):
