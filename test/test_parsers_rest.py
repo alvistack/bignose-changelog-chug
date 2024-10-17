@@ -1847,6 +1847,19 @@ class get_version_text_from_changelog_entry_TestCase(
             self.assertEqual(expected_version_text, result)
 
 
+def has_matching_node_id(node, node_id):
+    """ Return ``True`` iff `node` attribute 'ids' matches `node_id`.
+
+        :param node: The `docutils.nodes.Node` to query.
+        :param node_id: The node identifier (text) to match.
+        :return: ``True`` iff the `node_id` is in the 'ids' node attribute,
+            otherwise ``False``.
+        """
+    node_ids_value = node.get('ids')
+    result = bool(node_ids_value and (node_id in node_ids_value))
+    return result
+
+
 class get_changelog_entry_title_from_node_TestCase(
         testscenarios.WithScenarios, testtools.TestCase):
     """ Test cases for ‘get_version_text_from_changelog_entry’ function. """
@@ -1872,12 +1885,7 @@ class get_changelog_entry_title_from_node_TestCase(
             for candidate_node in itertools.chain(
                     [self.test_document],
                     self.test_document.children):
-                if (
-                        candidate_node.get('ids')
-                        and (
-                            next(iter(candidate_node.get('ids'))) == node_id
-                        )
-                ):
+                if has_matching_node_id(candidate_node, node_id):
                     test_entry_node = (
                         candidate_node.parent if isinstance(
                             candidate_node, docutils.nodes.subtitle)
