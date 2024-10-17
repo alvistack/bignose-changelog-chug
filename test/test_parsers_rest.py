@@ -2057,6 +2057,183 @@ class get_changelog_entry_nodes_from_document_TestCase(
                     node.pformat(), DoctreePformatEqual(expected_pformat))
 
 
+def make_changelog_entry_node_scenarios():
+    """ Make a sequence of scenarios for testing Change Log entry nodes.
+
+        :return: Sequence of tuples `(name, parameters)`. Each is a scenario
+            as specified for `testscenarios`.
+        """
+    rest_document_scenarios = make_rest_document_test_scenarios()
+    scenario_extra_params_by_scenario_name = {
+        'entries-one': {
+            'test_change_log_entry_node_id': "version-1-0",
+            'expected_field_list_pformat': textwrap.dedent("""\
+                <docinfo>
+                    <field classes="released">
+                        <field_name>
+                            Released
+                        <field_body>
+                            <paragraph>
+                                2009-01-01
+                    <field classes="maintainer">
+                        <field_name>
+                            Maintainer
+                        <field_body>
+                            <paragraph>
+                                Foo Bar <
+                                <reference refuri="mailto:foo.bar@example.org">
+                                    foo.bar@example.org
+                                >
+                """),
+        },
+        'entries-three': {
+            'test_change_log_entry_node_id': "version-0-7-2",
+            'expected_field_list_pformat': textwrap.dedent("""\
+                <field_list>
+                    <field>
+                        <field_name>
+                            Released
+                        <field_body>
+                            <paragraph>
+                                2001-01-01
+                    <field>
+                        <field_name>
+                            Maintainer
+                        <field_body>
+                            <paragraph>
+                                Foo Bar <
+                                <reference refuri="mailto:foo.bar@example.org">
+                                    foo.bar@example.org
+                                >
+                """),
+        },
+    }
+    scenarios = [
+        (scenario_name, dict(
+            test_document_text=scenario['test_document_text'],
+            **(scenario_extra_params_by_scenario_name[scenario_name])
+        ))
+        for (scenario_name, scenario) in rest_document_scenarios
+        if scenario_name in scenario_extra_params_by_scenario_name
+    ]
+    return scenarios
+
+
+def get_node_from_document_by_node_id(rest_document, *, node_id):
+    """ Get the node matching `node_id` `rest_document`.
+
+        :param rest_document: Document root, as a `docutils.nodes.document`
+            instance.
+        :param node_id: The identifier to match with the target node's 'ids'
+            attribute.
+        :return: The `docutils.nodes.Node` matching the query.
+        :raises ValueError: If no candidate node matches `node_id`.
+
+        Candidate nodes are: the document node itself, and all its immediate
+        child nodes.
+        """
+    candidate_nodes = itertools.chain(
+        [rest_document],
+        rest_document.children)
+    matching_nodes = get_nodes_matching_node_id(
+        candidate_nodes, node_id=node_id)
+    result = next(iter(matching_nodes))
+    return result
+
+
+class get_field_list_from_entry_node_TestCase(
+        testscenarios.WithScenarios, testtools.TestCase):
+    """ Test cases for ‘get_field_list_from_entry_node’ function. """
+
+    function_to_test = staticmethod(
+        chug.parsers.rest.get_field_list_from_entry_node)
+
+    scenarios = make_changelog_entry_node_scenarios()
+
+    def setUp(self):
+        """ Set up fixtures for this test case. """
+        super().setUp()
+
+        self.test_document = docutils.core.publish_doctree(
+            self.test_document_text)
+        self.test_change_log_entry_node = get_node_from_document_by_node_id(
+            self.test_document, node_id=self.test_change_log_entry_node_id)
+        self.test_args = [self.test_change_log_entry_node]
+
+    def test_returns_expected_result(self):
+        """ Should return expected result. """
+        result = self.function_to_test(*self.test_args)
+        self.assertThat(
+            result.pformat(),
+            DoctreePformatEqual(self.expected_field_list_pformat))
+
+
+class get_field_list_from_entry_node_ErrorTestCase(
+        testscenarios.WithScenarios, testtools.TestCase):
+    """ Error test cases for ‘get_field_list_from_entry_node’ function. """
+
+    function_to_test = staticmethod(
+        chug.parsers.rest.get_field_list_from_entry_node)
+
+    scenarios = [
+        ('not-a-node', {
+            'test_document': object(),
+            'expected_error': TypeError,
+        }),
+        ('empty', {
+            'test_document': docutils.core.publish_doctree(""),
+            'expected_error': ValueError,
+        }),
+        ('document-title section-no-field-list', {
+            'test_document': docutils.core.publish_doctree(
+                textwrap.dedent("""\
+                    Felis gravida lacinia
+                    #####################
+
+                    Maecenas feugiat nibh sed enim fringilla faucibus.
+                    """),
+            ),
+            'expected_error': ValueError,
+        }),
+        ('document-title docinfo-table section-no-field-list', {
+            'test_document': docutils.core.publish_doctree(
+                textwrap.dedent("""\
+                    Felis gravida lacinia
+                    #####################
+
+                    :Published: 2009-01-01
+                    :License: AGPL-3+
+
+                    Maecenas feugiat nibh sed enim fringilla faucibus.
+
+                    Version 1.0
+                    ===========
+
+                    * Lorem ipsum dolor sit amet.
+                    """),
+            ),
+            'test_change_log_entry_node_id': "version-1-0",
+            'expected_error': ValueError,
+        }),
+    ]
+
+    def setUp(self):
+        """ Set up fixtures for this test case. """
+        super().setUp()
+
+        self.test_change_log_entry_node = (
+            get_node_from_document_by_node_id(
+                self.test_document, node_id=self.test_change_log_entry_node_id)
+            if hasattr(self, 'test_change_log_entry_node_id')
+            else self.test_document)
+        self.test_args = [self.test_change_log_entry_node]
+
+    def test_raises_expected_error(self):
+        """ Should raise expected error. """
+        with make_expected_error_context(self):
+            __ = self.function_to_test(*self.test_args)
+
+
 # Copyright © 2008–2024 Ben Finney <ben+python@benfinney.id.au>
 #
 # This is free software: you may copy, modify, and/or distribute this work

@@ -217,6 +217,41 @@ def get_changelog_entry_nodes_from_document(rest_document):
     return result
 
 
+field_list_type_by_entry_node_type = {
+    docutils.nodes.document: docutils.nodes.docinfo,
+    docutils.nodes.section: docutils.nodes.field_list,
+}
+""" Mapping from Change Log entry node type, to field list node type.
+
+    Each different node type that can be a Change Log entry, has different
+    child node type for its corresponding field list where we find metadata
+    about the Change Log entry. This mapping allows specifying exactly the
+    child node type we need based on the given Change Log entry. """
+
+
+def get_field_list_from_entry_node(entry_node):
+    """ Get the field list of metadata for the Change Log `entry_node`.
+
+        :param entry_node: The `docutils.nodes.Node` representing the Change
+            Log entry.
+        :return: The ‘docutils.nodes.Node’ representing the field list.
+        :raises ValueError: If no field list node was found as a child of
+            `entry_node`.
+        """
+    verify_is_docutils_node(entry_node, node_type=tuple(
+        field_list_type_by_entry_node_type.keys()))
+    field_list_node_type = field_list_type_by_entry_node_type[
+        type(entry_node)]
+    field_list_nodes = [
+        node for node in entry_node.children
+        if isinstance(node, field_list_node_type)
+    ]
+    if not field_list_nodes:
+        raise ValueError(
+            "no ‘field_list’ child found on {!r}".format(entry_node))
+    return next(iter(field_list_nodes))
+
+
 # Copyright © 2008–2024 Ben Finney <ben+python@benfinney.id.au>
 #
 # This is free software: you may copy, modify, and/or distribute this work
