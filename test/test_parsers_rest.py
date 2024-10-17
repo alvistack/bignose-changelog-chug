@@ -1243,6 +1243,56 @@ class get_changelog_entry_title_from_node_TestCase(
                     self.assertEqual(expected_result, result)
 
 
+def normalise_whitespace_to_single_space(text):
+    """ Return normalised rendition of `text` with single space.
+
+        :param text: The text value to normalise.
+        :return: The normalised text.
+
+        The rendition replaces each sequence of characters matching '[\n\t ]+'
+        with a single U+0020 SPACE.
+        """
+    normalised_text = " ".join((
+        text.replace("\n", " ").replace("\t", " ")
+    ).split())
+    return normalised_text
+
+
+class DoctreePformatEqual(testtools.matchers.Matcher):
+    """ A matcher to compare the value of Docutils node ‘pformat’ output. """
+
+    def __init__(self, expected):
+        self.expected_value = expected
+        self.expected_value_normalised = normalise_whitespace_to_single_space(
+            self.expected_value)
+
+    def match(self, value):
+        """ Assert the pformat output `value` matches the `expected_value`. """
+        result = None
+        value_normalised = normalise_whitespace_to_single_space(value)
+        if value_normalised != self.expected_value_normalised:
+            result = DoctreePformatValueMismatch(self.expected_value, value)
+        return result
+
+
+class DoctreePformatValueMismatch(testtools.matchers.Mismatch):
+    """ The specified ‘pformat’ output does not match the expected value. """
+
+    def __init__(self, expected, actual):
+        self.expected_value = expected
+        self.actual_value = actual
+
+    def describe(self):
+        """ Emit a text description of this mismatch. """
+        text = textwrap.dedent("""\
+
+            reference: {expected}
+            actual: {actual}
+            """).format(
+                expected=self.expected_value, actual=self.actual_value)
+        return text
+
+
 # Copyright © 2008–2024 Ben Finney <ben+python@benfinney.id.au>
 #
 # This is free software: you may copy, modify, and/or distribute this work
