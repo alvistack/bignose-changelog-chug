@@ -11,6 +11,7 @@ import docutils.core
 import docutils.nodes
 
 from . import core
+from .. import model
 
 
 def parse_rest_document_from_text(document_text):
@@ -308,6 +309,34 @@ def get_body_text_from_entry_node(entry_node):
         )]
     entry_body_text = entry_body.astext()
     return entry_body_text
+
+
+def make_change_log_entry_from_node(entry_node):
+    """ Make a `ChangeLogEntry` from `entry_node`.
+
+        :param entry_node: The `docutils.nodes.Node` representing the change
+            log entry.
+        :return: A new `models.ChangeLogEntry` representing the Change Log
+            entry.
+        """
+    verify_is_docutils_node(entry_node, node_type=tuple(
+        field_list_type_by_entry_node_type.keys()))
+    version_text = get_version_text_from_changelog_entry(entry_node)
+    field_list_node = get_field_list_from_entry_node(entry_node)
+    release_date_field_body = get_field_body_for_name(
+        field_list_node, 'released')
+    release_date_text = release_date_field_body.astext()
+    maintainer_field_body = get_field_body_for_name(
+        field_list_node, 'maintainer')
+    maintainer_text = maintainer_field_body.astext()
+    body_text = get_body_text_from_entry_node(entry_node)
+    result = model.ChangeLogEntry(
+        release_date=release_date_text,
+        version=version_text,
+        maintainer=maintainer_text,
+        body=body_text,
+    )
+    return result
 
 
 # Copyright © 2008–2024 Ben Finney <ben+python@benfinney.id.au>

@@ -18,6 +18,7 @@ import semver
 import testscenarios
 import testtools
 
+import chug.model
 import chug.parsers.rest
 
 from . import make_expected_error_context
@@ -2085,6 +2086,12 @@ def make_changelog_entry_node_scenarios():
                                     foo.bar@example.org
                                 >
                 """),
+            'expected_change_log_entry': chug.model.ChangeLogEntry(
+                version="1.0",
+                release_date="2009-01-01",
+                maintainer="Foo Bar <foo.bar@example.org>",
+                body="Lorem ipsum dolor sit amet.",
+            ),
         },
         'entries-three': {
             'test_change_log_entry_node_id': "version-0-7-2",
@@ -2106,6 +2113,12 @@ def make_changelog_entry_node_scenarios():
                                     foo.bar@example.org
                                 >
                 """),
+            'expected_change_log_entry': chug.model.ChangeLogEntry(
+                version="0.7.2",
+                release_date="2001-01-01",
+                maintainer="Foo Bar <foo.bar@example.org>",
+                body="Pellentesque elementum mollis finibus.",
+            ),
         },
     }
     scenarios = [
@@ -2614,6 +2627,102 @@ class get_body_text_from_entry_node_ErrorTestCase(
                 self.test_document, node_id=self.test_change_log_entry_node_id)
             if hasattr(self, 'test_change_log_entry_node_id')
             else self.test_document)
+        self.test_args = [self.test_change_log_entry_node]
+
+    def test_raises_expected_error(self):
+        """ Should raise expected error. """
+        with make_expected_error_context(self):
+            __ = self.function_to_test(*self.test_args)
+
+
+class make_change_log_entry_from_node_TestCase(
+        testscenarios.WithScenarios, testtools.TestCase):
+    """ Test cases for ‘make_change_log_entry_from_node’ function. """
+
+    function_to_test = staticmethod(
+        chug.parsers.rest.make_change_log_entry_from_node)
+
+    scenarios = make_changelog_entry_node_scenarios()
+
+    def setUp(self):
+        """ Set up fixtures for this test case. """
+        super().setUp()
+
+        self.test_document = docutils.core.publish_doctree(
+            self.test_document_text)
+        self.test_change_log_entry_node = get_node_from_document_by_node_id(
+            self.test_document, node_id=self.test_change_log_entry_node_id)
+        self.test_args = [self.test_change_log_entry_node]
+
+    def test_returns_expected_result(self):
+        """ Should return expected result. """
+        result = self.function_to_test(*self.test_args)
+        self.assertEqual(
+            self.expected_change_log_entry.as_version_info_entry(),
+            result.as_version_info_entry())
+
+
+class make_change_log_entry_from_node_ErrorTestCase(
+        testscenarios.WithScenarios, testtools.TestCase):
+    """ Error test cases for ‘make_change_log_entry_from_node’ function. """
+
+    function_to_test = staticmethod(
+        chug.parsers.rest.make_change_log_entry_from_node)
+
+    scenarios = [
+        ('not-a-node', {
+            'test_document': object(),
+            'expected_error': TypeError,
+        }),
+        ('empty', {
+            'test_document': docutils.core.publish_doctree(""),
+            'expected_error': ValueError,
+        }),
+        ('document-title section-no-field-list', {
+            'test_document': docutils.core.publish_doctree(
+                textwrap.dedent("""\
+                    Felis gravida lacinia
+                    #####################
+
+                    Maecenas feugiat nibh sed enim fringilla faucibus.
+                    """),
+            ),
+            'expected_error': ValueError,
+        }),
+        ('document-title docinfo-table section-no-field-list', {
+            'test_document': docutils.core.publish_doctree(
+                textwrap.dedent("""\
+                    Felis gravida lacinia
+                    #####################
+
+                    :Published: 2009-01-01
+                    :License: AGPL-3+
+
+                    Maecenas feugiat nibh sed enim fringilla faucibus.
+
+                    Version 1.0
+                    ===========
+
+                    * Lorem ipsum dolor sit amet.
+                    """),
+            ),
+            'test_change_log_entry_node_id': "version-1-0",
+            'expected_error': ValueError,
+        }),
+    ]
+
+    def setUp(self):
+        """ Set up fixtures for this test case. """
+        super().setUp()
+
+        if hasattr(self, 'test_change_log_entry_node_id'):
+            matching_entry_nodes = make_entry_node_by_node_id(
+                self.test_document,
+                node_ids=[self.test_change_log_entry_node_id])
+            self.test_change_log_entry_node = matching_entry_nodes[
+                self.test_change_log_entry_node_id]
+        else:
+            self.test_change_log_entry_node = self.test_document
         self.test_args = [self.test_change_log_entry_node]
 
     def test_raises_expected_error(self):
