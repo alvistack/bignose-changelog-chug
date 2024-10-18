@@ -21,9 +21,12 @@ CODE_PACKAGE_DIRS += ${MAKE_TEST_MODULE_DIR}
 TEST_UNITTEST_OPTS ?=
 
 TEST_COVERAGE_MINIMUM_PERCENT ?= 95
-TEST_COVERAGE_RUN_OPTS ?= --branch
-TEST_COVERAGE_REPORT_OPTS ?= --fail-under ${TEST_COVERAGE_MINIMUM_PERCENT}
-TEST_COVERAGE_HTML_OPTS ?= --directory ${coverage_html_report_dir}/
+TEST_COVERAGE_RUN_OPTS ?= --data-file ${COVERAGE_FILE} \
+	--branch
+TEST_COVERAGE_REPORT_OPTS ?= --data-file ${COVERAGE_FILE}\
+	--fail-under ${TEST_COVERAGE_MINIMUM_PERCENT}
+TEST_COVERAGE_HTML_OPTS ?= --data-file ${COVERAGE_FILE}\
+	--directory ${coverage_html_report_dir}/
 
 
 .PHONY: test
@@ -38,22 +41,22 @@ test-unittest:
 test-coverage: test-coverage-run test-coverage-html test-coverage-report
 
 .PHONY: test-coverage-run
-test-coverage-run: .coverage
+test-coverage-run: ${COVERAGE_FILE}
 
-.coverage: ${CODE_MODULES}
+${COVERAGE_FILE}: ${CODE_MODULES}
 	$(PYTHON) -m coverage run ${TEST_COVERAGE_RUN_OPTS} \
 		-m unittest ${TEST_UNITTEST_OPTS}
 
 GENERATED_FILES += ${COVERAGE_FILE}
 
 .PHONY: test-coverage-html
-test-coverage-html: .coverage
+test-coverage-html: ${COVERAGE_FILE}
 	$(PYTHON) -m coverage html ${TEST_COVERAGE_HTML_OPTS}
 
 GENERATED_FILES += ${coverage_html_report_dir}
 
 .PHONY: test-coverage-report
-test-coverage-report: .coverage
+test-coverage-report: ${COVERAGE_FILE}
 	$(PYTHON) -m coverage report ${TEST_COVERAGE_REPORT_OPTS}
 
 
