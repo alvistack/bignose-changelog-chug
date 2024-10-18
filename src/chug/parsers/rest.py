@@ -284,6 +284,31 @@ def get_field_body_for_name(field_list_node, field_name):
     (__, field_body_node) = field_node.children
     return field_body_node
 
+
+def get_body_text_from_entry_node(entry_node):
+    """ Get the body text of the Change Log `entry_node`.
+
+        :param entry_node: The `docutils.nodes.Node` representing the Change
+            Log entry.
+        :return: The text of the body of the Change Log entry.
+
+        The Change Log entry body is all content in the entry that follows the
+        title, subtitle, and metadata field list.
+        """
+    verify_is_docutils_node(entry_node, node_type=tuple(
+        field_list_type_by_entry_node_type.keys()))
+    entry_body = docutils.nodes.section()
+    entry_body.children = [
+        child_node for child_node in entry_node.children
+        if (
+                not isinstance(child_node, (
+                    docutils.nodes.title,
+                    docutils.nodes.subtitle,
+                    *field_list_type_by_entry_node_type.values()))
+        )]
+    entry_body_text = entry_body.astext()
+    return entry_body_text
+
 
 # Copyright © 2008–2024 Ben Finney <ben+python@benfinney.id.au>
 #

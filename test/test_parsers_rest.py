@@ -2426,6 +2426,202 @@ class get_field_body_for_name_ErrorTestCase(
             __ = self.function_to_test(*self.test_args)
 
 
+class get_body_text_from_entry_node_TestCase(
+        testscenarios.WithScenarios, testtools.TestCase):
+    """ Test cases for ‘get_body_text_from_entry_node’ function. """
+
+    function_to_test = staticmethod(
+        chug.parsers.rest.get_body_text_from_entry_node)
+
+    scenarios = [
+        ('entries-one paragraphs-one', {
+            'test_document_text': textwrap.dedent("""\
+                Version 1.0
+                ===========
+
+                :Released: 2009-01-01
+                :Maintainer: Foo Bar <foo.bar@example.org>
+                :License: AGPL-3+
+
+                * Lorem ipsum dolor sit amet.
+                """),
+            'test_change_log_entry_node_id': "version-1-0",
+            'expected_result': "Lorem ipsum dolor sit amet.",
+        }),
+        ('entries-one paragraphs-three', {
+            'test_document_text': textwrap.dedent("""\
+                Version 1.0
+                ===========
+
+                :Released: 2009-01-01
+                :Maintainer: Foo Bar <foo.bar@example.org>
+                :License: AGPL-3+
+
+                Sed rhoncus fermentum dui.
+
+                * Quisque at est tincidunt, lobortis mi sit amet,
+                  lacinia sapien.
+
+                * Lorem ipsum dolor sit amet.
+                """),
+            'test_change_log_entry_node_id': "version-1-0",
+            'expected_result': textwrap.dedent("""\
+                Sed rhoncus fermentum dui.
+
+                Quisque at est tincidunt, lobortis mi sit amet,
+                lacinia sapien.
+
+                Lorem ipsum dolor sit amet."""),
+        }),
+        ('entries-three paragraphs-one', {
+            'test_document_text': textwrap.dedent("""\
+                Version 1.0
+                ===========
+
+                :Released: 2009-01-01
+                :Maintainer: Foo Bar <foo.bar@example.org>
+                :License: AGPL-3+
+
+                * Lorem ipsum dolor sit amet.
+
+
+                version 0.8
+                ===========
+
+                :Released: 2004-01-01
+                :Maintainer: Foo Bar <foo.bar@example.org>
+                :License: AGPL-3+
+
+                * Donec venenatis nisl aliquam ipsum.
+
+
+                Version 0.7.2
+                =============
+
+                :Released: 2001-01-01
+                :Maintainer: Foo Bar <foo.bar@example.org>
+                :License: AGPL-3+
+
+                * Pellentesque elementum mollis finibus.
+                """),
+            'test_change_log_entry_node_id': "version-0-7-2",
+            'expected_result': "Pellentesque elementum mollis finibus.",
+        }),
+        ('entries-three paragraphs-three', {
+            'test_document_text': textwrap.dedent("""\
+                Version 1.0
+                ===========
+
+                :Released: 2009-01-01
+                :Maintainer: Foo Bar <foo.bar@example.org>
+                :License: AGPL-3+
+
+                * Lorem ipsum dolor sit amet.
+
+
+                version 0.8
+                ===========
+
+                :Released: 2004-01-01
+                :Maintainer: Meep Morp <meep.morp@example.org>
+                :License: AGPL-3+
+
+                * Donec venenatis nisl aliquam ipsum.
+
+
+                Version 0.7.2
+                =============
+
+                :Released: 2001-01-01
+                :Maintainer: Zang Warx <zang.warx@example.org>
+                :License: AGPL-3+
+
+                Maecenas sodales posuere justo, eu rhoncus leo fringilla sit
+                amet.
+
+                * Nulla purus dui, lacinia ultrices bibendum sit amet,
+                  pulvinar vel velit.
+
+                * Pellentesque elementum mollis finibus.
+                """),
+            'test_change_log_entry_node_id': "version-0-7-2",
+            'expected_result': textwrap.dedent("""\
+                Maecenas sodales posuere justo, eu rhoncus leo fringilla sit
+                amet.
+
+                Nulla purus dui, lacinia ultrices bibendum sit amet,
+                pulvinar vel velit.
+
+                Pellentesque elementum mollis finibus."""),
+        }),
+        ('empty', {
+            'test_document_text': "",
+            'expected_result': "",
+        }),
+        ('entries-one paragraphs-none', {
+            'test_document_text': textwrap.dedent("""\
+                Version 1.0
+                ===========
+
+                :Released: 2009-01-01
+                :Maintainer: Foo Bar <foo.bar@example.org>
+                :License: AGPL-3+
+                """),
+            'test_change_log_entry_node_id': "version-1-0",
+            'expected_result': "",
+        }),
+    ]
+
+    def setUp(self):
+        """ Set up fixtures for this test case. """
+        super().setUp()
+
+        self.test_document = docutils.core.publish_doctree(
+            self.test_document_text)
+        self.test_change_log_entry_node = (
+            get_node_from_document_by_node_id(
+                self.test_document, node_id=self.test_change_log_entry_node_id)
+            if hasattr(self, 'test_change_log_entry_node_id')
+            else self.test_document)
+        self.test_args = [self.test_change_log_entry_node]
+
+    def test_returns_expected_result(self):
+        """ Should return expected result. """
+        result = self.function_to_test(*self.test_args)
+        self.assertEqual(self.expected_result, result)
+
+
+class get_body_text_from_entry_node_ErrorTestCase(
+        testscenarios.WithScenarios, testtools.TestCase):
+    """ Error test cases for ‘get_body_text_from_entry_node’ function. """
+
+    function_to_test = staticmethod(
+        chug.parsers.rest.get_body_text_from_entry_node)
+
+    scenarios = [
+        ('not-a-node', {
+            'test_document': object(),
+            'expected_error': TypeError,
+        }),
+    ]
+
+    def setUp(self):
+        """ Set up fixtures for this test case. """
+        super().setUp()
+
+        self.test_change_log_entry_node = (
+            get_node_from_document_by_node_id(
+                self.test_document, node_id=self.test_change_log_entry_node_id)
+            if hasattr(self, 'test_change_log_entry_node_id')
+            else self.test_document)
+        self.test_args = [self.test_change_log_entry_node]
+
+    def test_raises_expected_error(self):
+        """ Should raise expected error. """
+        with make_expected_error_context(self):
+            __ = self.function_to_test(*self.test_args)
+
+
 # Copyright © 2008–2024 Ben Finney <ben+python@benfinney.id.au>
 #
 # This is free software: you may copy, modify, and/or distribute this work
