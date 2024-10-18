@@ -2234,6 +2234,198 @@ class get_field_list_from_entry_node_ErrorTestCase(
             __ = self.function_to_test(*self.test_args)
 
 
+class get_field_body_for_name_TestCase(
+        testscenarios.WithScenarios, testtools.TestCase):
+    """ Test cases for ‘get_field_body_for_name’ function. """
+
+    function_to_test = staticmethod(
+        chug.parsers.rest.get_field_body_for_name)
+
+    scenarios = [
+        ('entries-one fields-three first-field', {
+            'test_document_text': textwrap.dedent("""\
+                Version 1.0
+                ===========
+
+                :Released: 2009-01-01
+                :Maintainer: Foo Bar <foo.bar@example.org>
+                :License: AGPL-3+
+
+                * Lorem ipsum dolor sit amet.
+                """),
+            'test_change_log_entry_node_id': "version-1-0",
+            'test_field_name': "released",
+            'expected_result_pformat': textwrap.dedent("""\
+                <field_body>
+                    <paragraph>
+                        2009-01-01
+                """),
+        }),
+        ('entries-one fields-three second-field', {
+            'test_document_text': textwrap.dedent("""\
+                Version 1.0
+                ===========
+
+                :Released: 2009-01-01
+                :Maintainer: Foo Bar <foo.bar@example.org>
+                :License: AGPL-3+
+
+                * Lorem ipsum dolor sit amet.
+                """),
+            'test_change_log_entry_node_id': "version-1-0",
+            'test_field_name': "maintainer",
+            'expected_result_pformat': textwrap.dedent("""\
+                <field_body>
+                    <paragraph>
+                        Foo Bar <
+                        <reference refuri="mailto:foo.bar@example.org">
+                            foo.bar@example.org
+                        >
+                """),
+        }),
+        ('entries-three fields-three first-field', {
+            'test_document_text': textwrap.dedent("""\
+                Version 1.0
+                ===========
+
+                :Released: 2009-01-01
+                :Maintainer: Foo Bar <foo.bar@example.org>
+                :License: AGPL-3+
+
+                * Lorem ipsum dolor sit amet.
+
+
+                version 0.8
+                ===========
+
+                :Released: 2004-01-01
+                :Maintainer: Foo Bar <foo.bar@example.org>
+                :License: AGPL-3+
+
+                * Donec venenatis nisl aliquam ipsum.
+
+
+                Version 0.7.2
+                =============
+
+                :Released: 2001-01-01
+                :Maintainer: Foo Bar <foo.bar@example.org>
+                :License: AGPL-3+
+
+                * Pellentesque elementum mollis finibus.
+                """),
+            'test_change_log_entry_node_id': "version-0-7-2",
+            'test_field_name': "released",
+            'expected_result_pformat': textwrap.dedent("""\
+                <field_body>
+                    <paragraph>
+                        2001-01-01
+                """),
+        }),
+        ('entries-three fields-three second-field', {
+            'test_document_text': textwrap.dedent("""\
+                Version 1.0
+                ===========
+
+                :Released: 2009-01-01
+                :Maintainer: Foo Bar <foo.bar@example.org>
+                :License: AGPL-3+
+
+                * Lorem ipsum dolor sit amet.
+
+
+                version 0.8
+                ===========
+
+                :Released: 2004-01-01
+                :Maintainer: Meep Morp <meep.morp@example.org>
+                :License: AGPL-3+
+
+                * Donec venenatis nisl aliquam ipsum.
+
+
+                Version 0.7.2
+                =============
+
+                :Released: 2001-01-01
+                :Maintainer: Zang Warx <zang.warx@example.org>
+                :License: AGPL-3+
+
+                * Pellentesque elementum mollis finibus.
+                """),
+            'test_change_log_entry_node_id': "version-0-7-2",
+            'test_field_name': "maintainer",
+            'expected_result_pformat': textwrap.dedent("""\
+                <field_body>
+                    <paragraph>
+                        Zang Warx <
+                        <reference refuri="mailto:zang.warx@example.org">
+                            zang.warx@example.org
+                        >
+                """),
+        }),
+    ]
+
+    def setUp(self):
+        """ Set up fixtures for this test case. """
+        super().setUp()
+
+        self.test_document = docutils.core.publish_doctree(
+            self.test_document_text)
+        self.test_change_log_entry_node = get_node_from_document_by_node_id(
+            self.test_document, node_id=self.test_change_log_entry_node_id)
+        self.test_field_list_node = next(iter(
+            child_node
+            for child_node in self.test_change_log_entry_node.children
+            if isinstance(child_node, (
+                    docutils.nodes.docinfo,
+                    docutils.nodes.field_list))
+        ))
+        self.test_args = [self.test_field_list_node, self.test_field_name]
+
+    def test_returns_expected_result(self):
+        """ Should return expected result. """
+        result = self.function_to_test(*self.test_args)
+        self.assertEqual(self.expected_result_pformat, result.pformat())
+
+
+class get_field_body_for_name_ErrorTestCase(
+        testscenarios.WithScenarios, testtools.TestCase):
+    """ Error test cases for ‘get_field_body_for_name’ function. """
+
+    function_to_test = staticmethod(
+        chug.parsers.rest.get_field_body_for_name)
+
+    scenarios = [
+        ('not-a-node', {
+            'test_field_list_node': object(),
+            'test_field_name': "b0gUs",
+            'expected_error': TypeError,
+        }),
+        ('not-a-field-list-node', {
+            'test_field_list_node': docutils.nodes.paragraph(),
+            'test_field_name': "b0gUs",
+            'expected_error': TypeError,
+        }),
+        ('empty', {
+            'test_field_list_node': docutils.nodes.field_list(),
+            'test_field_name': "b0gUs",
+            'expected_error': KeyError,
+        }),
+    ]
+
+    def setUp(self):
+        """ Set up fixtures for this test case. """
+        super().setUp()
+
+        self.test_args = [self.test_field_list_node, self.test_field_name]
+
+    def test_raises_expected_error(self):
+        """ Should raise expected error. """
+        with make_expected_error_context(self):
+            __ = self.function_to_test(*self.test_args)
+
+
 # Copyright © 2008–2024 Ben Finney <ben+python@benfinney.id.au>
 #
 # This is free software: you may copy, modify, and/or distribute this work

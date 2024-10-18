@@ -251,6 +251,39 @@ def get_field_list_from_entry_node(entry_node):
             "no ‘field_list’ child found on {!r}".format(entry_node))
     return next(iter(field_list_nodes))
 
+
+def get_field_body_for_name(field_list_node, field_name):
+    """ Get the body of field matching `field_name` in `field_list_node`.
+
+        :param field_list_node: The `docutils.nodes.Node` representing the
+            field list.
+        :param field_name: The name (text) of the field to match.
+        :return: The ‘docutils.nodes.Node’ representing the field body.
+        :raises KeyError: If no field was found with name matching
+            `field_name`.
+        """
+    verify_is_docutils_node(field_list_node, node_type=tuple(
+        field_list_type_by_entry_node_type.values()))
+    matching_field_nodes = [
+        field_node
+        for (field_node, (field_name_node, field_body_node)) in (
+                (child_node, child_node.children)
+                for child_node in field_list_node.children)
+        if (
+                isinstance(field_node, docutils.nodes.field)
+                and (
+                    field_name_node.astext().lower()
+                    == field_name.lower()))
+    ]
+    if not matching_field_nodes:
+        raise KeyError(
+            "no ‘field’ with name {name!r} in {field_list!r}".format(
+                field_list=field_list_node,
+                name=field_name))
+    field_node = next(iter(matching_field_nodes))
+    (__, field_body_node) = field_node.children
+    return field_body_node
+
 
 # Copyright © 2008–2024 Ben Finney <ben+python@benfinney.id.au>
 #
