@@ -133,7 +133,7 @@ def get_version_text_from_changelog_entry(entry_node):
             log entry.
         :return: The version text parsed from the `entry_node` title.
         """
-    title_text = get_node_title_text(entry_node)
+    title_text = get_changelog_entry_title_from_node(entry_node)
     version_text = core.get_version_text_from_entry_title(title_text)
     return version_text
 

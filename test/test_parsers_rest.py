@@ -944,11 +944,15 @@ class get_version_text_from_changelog_entry_TestCase(
             self.test_document_text)
         changelog_entry_nodes = chug.parsers.rest.get_top_level_sections(
             test_document)
-        for (entry_node, expected_version_text) in (zip(
+        for (candidate_node, expected_version_text) in (zip(
                 changelog_entry_nodes,
                 self.expected_versions_text)):
+            test_entry_node = (
+                candidate_node.parent if isinstance(
+                    candidate_node, docutils.nodes.subtitle)
+                else candidate_node)
             with self.subTest(expected_version_text=expected_version_text):
-                test_args = [entry_node]
+                test_args = [test_entry_node]
                 result = self.function_to_test(*test_args)
             self.assertEqual(expected_version_text, result)
 
