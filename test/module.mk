@@ -9,6 +9,9 @@
 
 MAKE_TEST_MODULE_DIR := $(CURDIR)/test
 
+export LANG ?= C.UTF-8
+export LC_ALL ?= C.UTF-8
+
 export COVERAGE_FILE = $(CURDIR)/.coverage
 coverage_html_report_dir = $(CURDIR)/htmlcov
 

@@ -10,6 +10,8 @@ packages:
   - python3-pip
   - python3-venv
 environment:
+  LANG: C.UTF-8
+  LC_ALL: C.UTF-8
   VIRTUAL_ENV: venv
   REPO_NAME: changelog-chug
 sources:
