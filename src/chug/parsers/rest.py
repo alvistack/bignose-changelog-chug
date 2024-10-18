@@ -338,6 +338,22 @@ def make_change_log_entry_from_node(entry_node):
     )
     return result
 
+
+def make_change_log_entries_from_document(rest_document):
+    """ Make sequence of `ChangeLogEntry` for entries from `rest_document`.
+
+        :param rest_document: Document root, as a `docutils.nodes.document`
+            instance.
+        :return: A sequence of `models.ChangeLogEntry` instances, representing
+            the Change Log entries from `rest_document`.
+        """
+    entry_nodes = get_changelog_entry_nodes_from_document(rest_document)
+    entries = [
+        make_change_log_entry_from_node(entry_node)
+        for entry_node in entry_nodes
+    ]
+    return entries
+
 
 # Copyright © 2008–2024 Ben Finney <ben+python@benfinney.id.au>
 #

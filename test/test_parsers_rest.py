@@ -371,6 +371,14 @@ def make_rest_document_test_scenarios():
             'expected_versions_text': [
                 "1.0",
             ],
+            'expected_change_log_entries': [
+                chug.model.ChangeLogEntry(
+                    release_date="2009-01-01",
+                    version="1.0",
+                    maintainer="Foo Bar <foo.bar@example.org>",
+                    body="Lorem ipsum dolor sit amet.",
+                ),
+            ],
         }),
         ('entries-three', {
             'test_document_text': textwrap.dedent("""\
@@ -504,6 +512,26 @@ def make_rest_document_test_scenarios():
                 "0.8",
                 "0.7.2",
             ],
+            'expected_change_log_entries': [
+                chug.model.ChangeLogEntry(
+                    release_date="2009-01-01",
+                    version="1.0",
+                    maintainer="Foo Bar <foo.bar@example.org>",
+                    body="Lorem ipsum dolor sit amet.",
+                ),
+                chug.model.ChangeLogEntry(
+                    release_date="2004-01-01",
+                    version="0.8",
+                    maintainer="Foo Bar <foo.bar@example.org>",
+                    body="Donec venenatis nisl aliquam ipsum.",
+                ),
+                chug.model.ChangeLogEntry(
+                    release_date="2001-01-01",
+                    version="0.7.2",
+                    maintainer="Foo Bar <foo.bar@example.org>",
+                    body="Pellentesque elementum mollis finibus.",
+                ),
+            ],
         }),
         ('preamble-paragraph entries-one', {
             'test_document_text': textwrap.dedent("""\
@@ -560,6 +588,14 @@ def make_rest_document_test_scenarios():
             ],
             'expected_versions_text': [
                 "1.0",
+            ],
+            'expected_change_log_entries': [
+                chug.model.ChangeLogEntry(
+                    release_date="2009-01-01",
+                    version="1.0",
+                    maintainer="Foo Bar <foo.bar@example.org>",
+                    body="Lorem ipsum dolor sit amet.",
+                ),
             ],
         }),
         ('preamble-paragraph entries-three', {
@@ -697,6 +733,26 @@ def make_rest_document_test_scenarios():
                 "0.8",
                 "0.7.2",
             ],
+            'expected_change_log_entries': [
+                chug.model.ChangeLogEntry(
+                    release_date="2009-01-01",
+                    version="1.0",
+                    maintainer="Foo Bar <foo.bar@example.org>",
+                    body="Lorem ipsum dolor sit amet.",
+                ),
+                chug.model.ChangeLogEntry(
+                    release_date="2004-01-01",
+                    version="0.8",
+                    maintainer="Foo Bar <foo.bar@example.org>",
+                    body="Donec venenatis nisl aliquam ipsum.",
+                ),
+                chug.model.ChangeLogEntry(
+                    release_date="2001-01-01",
+                    version="0.7.2",
+                    maintainer="Foo Bar <foo.bar@example.org>",
+                    body="Pellentesque elementum mollis finibus.",
+                ),
+            ],
         }),
         ('document-title entries-one', {
             'test_document_text': textwrap.dedent("""\
@@ -763,6 +819,14 @@ def make_rest_document_test_scenarios():
             ],
             'expected_versions_text': [
                 "1.0",
+            ],
+            'expected_change_log_entries': [
+                chug.model.ChangeLogEntry(
+                    release_date="2009-01-01",
+                    version="1.0",
+                    maintainer="Foo Bar <foo.bar@example.org>",
+                    body="Lorem ipsum dolor sit amet.",
+                ),
             ],
         }),
         ('document-title entries-three', {
@@ -904,6 +968,26 @@ def make_rest_document_test_scenarios():
                 "0.8",
                 "0.7.2",
             ],
+            'expected_change_log_entries': [
+                chug.model.ChangeLogEntry(
+                    release_date="2009-01-01",
+                    version="1.0",
+                    maintainer="Foo Bar <foo.bar@example.org>",
+                    body="Lorem ipsum dolor sit amet.",
+                ),
+                chug.model.ChangeLogEntry(
+                    release_date="2004-01-01",
+                    version="0.8",
+                    maintainer="Foo Bar <foo.bar@example.org>",
+                    body="Donec venenatis nisl aliquam ipsum.",
+                ),
+                chug.model.ChangeLogEntry(
+                    release_date="2001-01-01",
+                    version="0.7.2",
+                    maintainer="Foo Bar <foo.bar@example.org>",
+                    body="Pellentesque elementum mollis finibus.",
+                ),
+            ],
         }),
         ('document-title preamble-paragraph entries-one', {
             'test_document_text': textwrap.dedent("""\
@@ -967,6 +1051,14 @@ def make_rest_document_test_scenarios():
             ],
             'expected_versions_text': [
                 "1.0",
+            ],
+            'expected_change_log_entries': [
+                chug.model.ChangeLogEntry(
+                    release_date="2009-01-01",
+                    version="1.0",
+                    maintainer="Foo Bar <foo.bar@example.org>",
+                    body="Lorem ipsum dolor sit amet.",
+                ),
             ],
         }),
         ('document-title preamble-paragraph entries-three', {
@@ -1109,6 +1201,26 @@ def make_rest_document_test_scenarios():
                 "1.0",
                 "0.8",
                 "0.7.2",
+            ],
+            'expected_change_log_entries': [
+                chug.model.ChangeLogEntry(
+                    release_date="2009-01-01",
+                    version="1.0",
+                    maintainer="Foo Bar <foo.bar@example.org>",
+                    body="Lorem ipsum dolor sit amet.",
+                ),
+                chug.model.ChangeLogEntry(
+                    release_date="2004-01-01",
+                    version="0.8",
+                    maintainer="Foo Bar <foo.bar@example.org>",
+                    body="Donec venenatis nisl aliquam ipsum.",
+                ),
+                chug.model.ChangeLogEntry(
+                    release_date="2001-01-01",
+                    version="0.7.2",
+                    maintainer="Foo Bar <foo.bar@example.org>",
+                    body="Pellentesque elementum mollis finibus.",
+                ),
             ],
         }),
         ('document-title top-sections-one changelog-format-invalid', {
@@ -1270,6 +1382,14 @@ def make_rest_document_test_scenarios():
             'expected_versions_text': [
                 "1.0",
             ],
+            'expected_change_log_entries': [
+                chug.model.ChangeLogEntry(
+                    release_date="2009-01-01",
+                    version="1.0",
+                    maintainer="Foo Bar <foo.bar@example.org>",
+                    body="Lorem ipsum dolor sit amet.",
+                ),
+            ],
         }),
         ('document-title-and-subtitle entries-three', {
             'test_document_text': textwrap.dedent("""\
@@ -1414,6 +1534,26 @@ def make_rest_document_test_scenarios():
                 "0.8",
                 "0.7.2",
             ],
+            'expected_change_log_entries': [
+                chug.model.ChangeLogEntry(
+                    release_date="2009-01-01",
+                    version="1.0",
+                    maintainer="Foo Bar <foo.bar@example.org>",
+                    body="Lorem ipsum dolor sit amet.",
+                ),
+                chug.model.ChangeLogEntry(
+                    release_date="2004-01-01",
+                    version="0.8",
+                    maintainer="Foo Bar <foo.bar@example.org>",
+                    body="Donec venenatis nisl aliquam ipsum.",
+                ),
+                chug.model.ChangeLogEntry(
+                    release_date="2001-01-01",
+                    version="0.7.2",
+                    maintainer="Foo Bar <foo.bar@example.org>",
+                    body="Pellentesque elementum mollis finibus.",
+                ),
+            ],
         }),
         ('document-title-and-subtitle preamble-paragraph entries-one', {
             'test_document_text': textwrap.dedent("""\
@@ -1481,6 +1621,14 @@ def make_rest_document_test_scenarios():
             ],
             'expected_versions_text': [
                 "1.0",
+            ],
+            'expected_change_log_entries': [
+                chug.model.ChangeLogEntry(
+                    release_date="2009-01-01",
+                    version="1.0",
+                    maintainer="Foo Bar <foo.bar@example.org>",
+                    body="Lorem ipsum dolor sit amet.",
+                ),
             ],
         }),
         ('document-title-and-subtitle preamble-paragraph entries-three', {
@@ -1627,6 +1775,26 @@ def make_rest_document_test_scenarios():
                 "1.0",
                 "0.8",
                 "0.7.2",
+            ],
+            'expected_change_log_entries': [
+                chug.model.ChangeLogEntry(
+                    release_date="2009-01-01",
+                    version="1.0",
+                    maintainer="Foo Bar <foo.bar@example.org>",
+                    body="Lorem ipsum dolor sit amet.",
+                ),
+                chug.model.ChangeLogEntry(
+                    release_date="2004-01-01",
+                    version="0.8",
+                    maintainer="Foo Bar <foo.bar@example.org>",
+                    body="Donec venenatis nisl aliquam ipsum.",
+                ),
+                chug.model.ChangeLogEntry(
+                    release_date="2001-01-01",
+                    version="0.7.2",
+                    maintainer="Foo Bar <foo.bar@example.org>",
+                    body="Pellentesque elementum mollis finibus.",
+                ),
             ],
         }),
     ]
@@ -2724,6 +2892,99 @@ class make_change_log_entry_from_node_ErrorTestCase(
         else:
             self.test_change_log_entry_node = self.test_document
         self.test_args = [self.test_change_log_entry_node]
+
+    def test_raises_expected_error(self):
+        """ Should raise expected error. """
+        with make_expected_error_context(self):
+            __ = self.function_to_test(*self.test_args)
+
+
+class make_change_log_entries_from_document_TestCase(
+        testscenarios.WithScenarios, testtools.TestCase):
+    """ Test cases for ‘make_change_log_entries_from_document’ function. """
+
+    function_to_test = staticmethod(
+        chug.parsers.rest.make_change_log_entries_from_document)
+
+    scenarios = make_rest_document_test_scenarios()
+
+    def setUp(self):
+        """ Set up fixtures for this test case. """
+        super().setUp()
+
+        self.test_document = docutils.core.publish_doctree(
+            self.test_document_text)
+        self.test_args = [self.test_document]
+
+    def test_returns_expected_result_or_raises_expected_error(self):
+        """ Should return expected result or raise expected error. """
+        with make_expected_error_context(self):
+            result = self.function_to_test(*self.test_args)
+        if hasattr(self, 'expected_change_log_entries'):
+            for (expected_change_log_entry, result_item) in zip(
+                    self.expected_change_log_entries,
+                    result,
+                    strict=True,
+            ):
+                self.assertEqual(
+                    expected_change_log_entry.as_version_info_entry(),
+                    result_item.as_version_info_entry())
+
+
+class make_change_log_entries_from_document_ErrorTestCase(
+        testscenarios.WithScenarios, testtools.TestCase):
+    """ Error test cases for ‘make_change_log_entries_from_document’. """
+
+    function_to_test = staticmethod(
+        chug.parsers.rest.make_change_log_entries_from_document)
+
+    scenarios = [
+        ('not-a-node', {
+            'test_document': object(),
+            'expected_error': TypeError,
+        }),
+        ('empty', {
+            'test_document': docutils.core.publish_doctree(""),
+            'expected_error': ValueError,
+        }),
+        ('document-title section-no-field-list', {
+            'test_document': docutils.core.publish_doctree(
+                textwrap.dedent("""\
+                    Felis gravida lacinia
+                    #####################
+
+                    Maecenas feugiat nibh sed enim fringilla faucibus.
+                    """),
+            ),
+            'expected_error': ValueError,
+        }),
+        ('document-title docinfo-table section-no-field-list', {
+            'test_document': docutils.core.publish_doctree(
+                textwrap.dedent("""\
+                    Felis gravida lacinia
+                    #####################
+
+                    :Published: 2009-01-01
+                    :License: AGPL-3+
+
+                    Maecenas feugiat nibh sed enim fringilla faucibus.
+
+                    Version 1.0
+                    ===========
+
+                    * Lorem ipsum dolor sit amet.
+                    """),
+            ),
+            'test_change_log_entry_node_id': "version-1-0",
+            'expected_error': ValueError,
+        }),
+    ]
+
+    def setUp(self):
+        """ Set up fixtures for this test case. """
+        super().setUp()
+
+        self.test_args = [self.test_document]
 
     def test_raises_expected_error(self):
         """ Should raise expected error. """
