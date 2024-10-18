@@ -1879,6 +1879,33 @@ def get_nodes_matching_node_id(nodes, node_id):
     return matching_nodes
 
 
+def make_entry_node_by_node_id(rest_document, *, node_ids):
+    """ Make a mapping of Change Log entry nodes by identifier.
+
+        :param rest_document: Document root, as a `docutils.nodes.document`
+            instance.
+        :param node_ids: Sequence of identifiers to match nodes in
+            `rest_document`.
+        :return: A mapping `{node_id: entry_node}` for each item in `node_ids`,
+            where `entry_node` is the Change Log entry node found in
+            `rest_document`.
+        """
+    entry_node_by_node_id = dict()
+    for node_id in node_ids:
+        for candidate_node in get_nodes_matching_node_id(
+                nodes=itertools.chain(
+                    [rest_document],
+                    rest_document.children),
+                node_id=node_id
+        ):
+            entry_node = (
+                candidate_node.parent if isinstance(
+                    candidate_node, docutils.nodes.subtitle)
+                else candidate_node)
+            entry_node_by_node_id[node_id] = entry_node
+    return entry_node_by_node_id
+
+
 class get_changelog_entry_title_from_node_TestCase(
         testscenarios.WithScenarios, testtools.TestCase):
     """ Test cases for ‘get_version_text_from_changelog_entry’ function. """
