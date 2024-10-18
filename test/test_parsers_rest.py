@@ -1146,7 +1146,6 @@ def make_rest_document_test_scenarios():
             'expected_changelog_entries_title_text': [
                 "Felis gravida lacinia",
             ],
-            'expected_versions_text': [],
             'expected_error': ValueError,
         }),
         ('document-title top-sections-three changelog-format-invalid', {
@@ -1203,7 +1202,6 @@ def make_rest_document_test_scenarios():
             'expected_changelog_entries_title_text': [
                 "Felis gravida lacinia",
             ],
-            'expected_versions_text': [],
             'expected_error': ValueError,
         }),
         ('document-title-and-subtitle entries-one', {
@@ -1633,10 +1631,12 @@ def make_rest_document_test_scenarios():
     ]
 
     for (__, scenario) in scenarios:
-        scenario['expected_versions'] = [
-            semver.Version.parse(version_text, optional_minor_and_patch=True)
-            for version_text in scenario['expected_versions_text']
-        ]
+        if 'expected_versions_text' in scenario:
+            scenario['expected_versions'] = [
+                semver.Version.parse(
+                    version_text, optional_minor_and_patch=True)
+                for version_text in scenario['expected_versions_text']
+            ]
 
     return scenarios
 
@@ -1828,20 +1828,35 @@ class get_version_text_from_changelog_entry_TestCase(
 
     scenarios = make_rest_document_test_scenarios()
 
+    def setUp(self):
+        """ Set up fixtures for this test case. """
+        super().setUp()
+
+        self.test_document = docutils.core.publish_doctree(
+            self.test_document_text)
+
     def test_returns_expected_result(self):
         """ Should return expected result. """
-        test_document = docutils.core.publish_doctree(
-            self.test_document_text)
-        changelog_entry_nodes = chug.parsers.rest.get_top_level_sections(
-            test_document)
-        for (candidate_node, expected_version_text) in (zip(
-                changelog_entry_nodes,
-                self.expected_versions_text)):
-            test_entry_node = (
-                candidate_node.parent if isinstance(
-                    candidate_node, docutils.nodes.subtitle)
-                else candidate_node)
-            with self.subTest(expected_version_text=expected_version_text):
+        if not hasattr(self, 'expected_versions_text'):
+            self.skipTest("no result expected")
+        self.expected_version_text_by_node_id = dict(zip(
+            self.expected_changelog_entries_node_id,
+            self.expected_versions_text,
+            strict=True,
+        ))
+        self.test_entry_node_by_node_id = make_entry_node_by_node_id(
+            self.test_document,
+            node_ids=self.expected_version_text_by_node_id.keys())
+        for (
+                test_node_id,
+                test_entry_node
+        ) in self.test_entry_node_by_node_id.items():
+            expected_version_text = self.expected_version_text_by_node_id[
+                test_node_id]
+            with self.subTest(
+                    node_id=test_node_id,
+                    expected_version_text=expected_version_text,
+            ):
                 test_args = [test_entry_node]
                 result = self.function_to_test(*test_args)
             self.assertEqual(expected_version_text, result)
