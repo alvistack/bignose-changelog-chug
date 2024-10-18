@@ -29,6 +29,19 @@ classifiers = [
 # The Python version requirements of the project.
 requires-python = ">= 3.7"
 
+# Core dependencies required for the package to operate.
+dependencies = [
+
+    # Semantic Versioning implementation.
+    # Documentation: <URL:https://python-semver.readthedocs.io/>.
+    "semver >= 3.0.0",
+
+    # Python Documentation Utilities.
+    # Documentation: <URL:https://docutils.sourceforge.io/docs/>.
+    "docutils >= 0.21.0",
+
+    ]
+
 # The license granted to recipients of this project.
 license = { file = "COPYING" }
 
