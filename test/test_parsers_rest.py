@@ -1936,45 +1936,28 @@ class get_changelog_entry_title_from_node_TestCase(
 
         self.test_document = docutils.core.publish_doctree(
             self.test_document_text)
-
-    def make_test_entry_node_by_node_id(self, expected_title_by_node_id):
-        """
-        Make the mapping `{node_id: test_entry_node}` for this test case.
-        """
-        test_entry_node_by_node_id = dict()
-        for node_id in expected_title_by_node_id:
-            for candidate_node in get_nodes_matching_node_id(
-                    nodes=itertools.chain(
-                        [self.test_document],
-                        self.test_document.children),
-                    node_id=node_id
-            ):
-                test_entry_node = (
-                    candidate_node.parent if isinstance(
-                        candidate_node, docutils.nodes.subtitle)
-                    else candidate_node)
-                test_entry_node_by_node_id[node_id] = test_entry_node
-        return test_entry_node_by_node_id
-
-    def test_returns_expected_result_or_raises_expected_error(self):
-        """ Should return expected result or raise expected error. """
-        expected_title_by_node_id = dict(zip(
+        self.expected_title_by_node_id = dict(zip(
             self.expected_changelog_entries_node_id,
             self.expected_changelog_entries_title_text,
             strict=True,
         ))
-        test_entry_node_by_node_id = self.make_test_entry_node_by_node_id(
-            expected_title_by_node_id)
+        self.test_entry_node_by_node_id = make_entry_node_by_node_id(
+            self.test_document,
+            node_ids=self.expected_title_by_node_id.keys())
+
+    def test_returns_expected_result_or_raises_expected_error(self):
+        """ Should return expected result or raise expected error. """
         for (
                 test_node_id,
                 test_entry_node
-        ) in test_entry_node_by_node_id.items():
+        ) in self.test_entry_node_by_node_id.items():
             with self.subTest(node_id=test_node_id):
                 test_args = [test_entry_node]
                 with make_expected_error_context(self):
                     result = self.function_to_test(*test_args)
                 if not hasattr(self, 'expected_error'):
-                    expected_result = expected_title_by_node_id[test_node_id]
+                    expected_result = self.expected_title_by_node_id[
+                        test_node_id]
                     self.assertEqual(expected_result, result)
 
 
