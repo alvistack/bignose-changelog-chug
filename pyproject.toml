@@ -142,15 +142,18 @@ requires = [
     # Documentation: <URL:https://setuptools.pypa.io/>.
     "setuptools >= 62.4.0",
 
+    # Semantic Versioning implementation.
+    # Documentation: <URL:https://python-semver.readthedocs.io/>.
+    "semver >= 3.0.0",
+
+    # Python Documentation Utilities.
+    # Documentation: <URL:https://docutils.sourceforge.io/docs/>.
+    "docutils >= 0.21.0",
+
     ]
 
 # Path to the Python object to perform the build.
 build-backend = "setuptools.build_meta"
-
-[tool.setuptools.dynamic]
-
-# Text file containing the distribution version value.
-version = { file = "VERSION" }
 
 [tool.coverage.run]
 

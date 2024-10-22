@@ -28,8 +28,15 @@ main_module_docstring = util.metadata.docstring_from_object(main_module)
 (synopsis, __) = util.metadata.synopsis_and_description_from_docstring(
     main_module_docstring)
 
+changelog_infile_path = package_root_dir.joinpath("ChangeLog")
+latest_changelog_entry = util.metadata.get_latest_changelog_entry(
+    changelog_infile_path)
+
+
 setup_kwargs = dict(
     description=synopsis,
+    version=latest_changelog_entry.version,
+    maintainer=latest_changelog_entry.maintainer,
 )
 
 
