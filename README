@@ -6,75 +6,98 @@ changelog-chug
 Example
 =======
 
-Generate a JSON document describing versions from the reStructuredText
+Given a reStructuredText document ChangeLog::
+
+    Change Log
+    ##########
+
+    Version 1.0.1
+    =============
+
+    :Released: 2020-01-10
+    :Maintainer: Cathy Morris <cathy.morris@example.com>
+
+    …
+
+    Version 1.0
+    ===========
+
+    :Released: 2020-01-10
+    :Maintainer: Luis Flores <ayalaian@example.org>
+
+    …
+
+    Version 0.2
+    ===========
+
+    :Released: 2019-07-04
+    :Maintainer: Cathy Morris <cathy.morris@example.com>
+
+    …
+
+    Version 0.2-alpha1
+    ==================
+
+    :Released: 2019-07-04
+    :Maintainer: Cathy Morris <cathy.morris@example.com>
+
+    …
+
+    Version 0.1
+    ===========
+
+    :Released: 2019-05-16
+    :Maintainer: Cathy Morris <cathy.morris@example.com>
+
+    …
+
+Generate Change Log entry data for all versions from the reStructuredText
 formatted ChangeLog::
 
-    $ chug --output-format JSON --input-format reST ChangeLog > versions.json
-    $ cat versions.json
+    >>> import pathlib
+    >>> import pprint
+    >>> import chug.parsers.rest
+    >>> import chug.writers
+    >>> infile_path = pathlib.Path(".", "ChangeLog")
+    >>> document_text = chug.parsers.get_changelog_document_text(infile_path)
+    >>> document = chug.parsers.rest.parse_rest_document_from_text(
+    ...     document_text)
+    >>> entries = chug.parsers.rest.make_change_log_entries_from_document(
+    ...     document)
+    >>> pprint.pprint([entry.as_version_info_entry() for entry in entries])
+    [OrderedDict([('release_date', '2020-01-10'),
+                  ('version', '1.0.1'),
+                  ('maintainer', 'Cathy Morris <cathy.morris@example.com>'),
+                  ('body', '…')]),
+     OrderedDict([('release_date', '2020-01-10'),
+                  ('version', '1.0'),
+                  ('maintainer', 'Luis Flores <ayalaian@example.org>'),
+                  ('body', '…')]),
+     OrderedDict([('release_date', '2019-07-04'),
+                  ('version', '0.2'),
+                  ('maintainer', 'Cathy Morris <cathy.morris@example.com>'),
+                  ('body', '…')]),
+     OrderedDict([('release_date', '2019-07-04'),
+                  ('version', '0.2-alpha1'),
+                  ('maintainer', 'Cathy Morris <cathy.morris@example.com>'),
+                  ('body', '…')]),
+     OrderedDict([('release_date', '2019-05-16'),
+                  ('version', '0.1'),
+                  ('maintainer', 'Cathy Morris <cathy.morris@example.com>'),
+                  ('body', '…')])]
+
+Generate a JSON document describing the latest version::
+
+    >>> import json
+    >>> latest_entry = entries[0]
+    >>> latest_entry_json = json.dumps(
+    ...     latest_entry.as_version_info_entry(), indent=4)
+    >>> print(latest_entry_json)
     {
-        "source_file": "ChangeLog",
-        "versions": [
-            "1.0.1", {
-                "version": "1.0.1",
-                "version_info": {
-                    "major": "1",
-                    "minor": "0",
-                    "patch": "1",
-                    "prerelease": null,
-                    "build": null
-                },
-                "release_date": "2020-01-10",
-                "entry_text": "…"
-            },
-            "1.0", {
-                "version": "1.0",
-                "version_info": {
-                    "major": "1",
-                    "minor": "0",
-                    "patch": null,
-                    "prerelease": null,
-                    "build": null
-                },
-                "release_date": "2020-01-10",
-                "entry_text": "…"
-            },
-            "0.2": {
-                "version": "0.2",
-                "version_info": {
-                    "major": "0",
-                    "minor": "2",
-                    "patch": null,
-                    "prerelease": null,
-                    "build": null
-                },
-                "release_date": "2019-07-04",
-                "entry_text": "…"
-            },
-            "0.2-alpha1": {
-                "version": "0.2-alpha1",
-                "version_info": {
-                    "major": "0",
-                    "minor": "2",
-                    "patch": null,
-                    "prerelease": "alpha1",
-                    "build": null
-                },
-                "release_date": "2019-07-04",
-                "entry_text": "…"
-            },
-            "0.1": {
-                "version": "0.1",
-                "version_info": {
-                    "major": "0",
-                    "minor": "1",
-                    "patch": null,
-                    "prerelease": null,
-                    "build": null
-                },
-                "release_date": "2019-05-16",
-                "entry_text": "…"
-            }
-        ]
+        "release_date": "2020-01-10",
+        "version": "1.0.1",
+        "maintainer": "Cathy Morris <cathy.morris@example.com>",
+        "body": "\u2026"
     }
 
 
