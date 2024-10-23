@@ -147,7 +147,7 @@ def mock_builtin_open_for_fake_files(testcase, *, fake_file_content_by_path):
 
         Create fake files (`io.StringIO`) containing each `fake_file_content`.
         Wrap the `builtins.open` function such that, for the specified
-        filesystem paths only, a specific mock `open` function will be called,
+        `file_path` only, a specific mock `open` function will be called,
         that returns the corresponding fake file; for any unspecified path,
         the original `builtins.open` will be called as normal.
         """
