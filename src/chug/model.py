@@ -10,6 +10,7 @@
 import collections
 import datetime
 import re
+import textwrap
 
 import semver
 
@@ -57,6 +58,20 @@ class ChangeLogEntry:
         self.validate_maintainer(maintainer)
         self.maintainer = maintainer
         self.body = body
+
+    def __repr__(self):
+        """ Programmer representation text of this instance. """
+        body_abbreviated = (
+            None if self.body is None
+            else textwrap.shorten(self.body, 30))
+        text = (
+            "<{0.__class__.__name__}"
+            " release_date: {0.release_date!r}"
+            " version: {0.release_date!r}"
+            " maintainer: {0.maintainer!r}"
+            " body: {body!r}"
+            ">").format(self, body=body_abbreviated)
+        return text
 
     @classmethod
     def validate_release_date(cls, value):

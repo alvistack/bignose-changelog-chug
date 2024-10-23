@@ -10,6 +10,7 @@
 import collections
 import contextlib
 import functools
+import textwrap
 
 import testscenarios
 import testtools
@@ -191,6 +192,56 @@ class ChangeLogEntry_body_TestCase(ChangeLogEntry_BaseTestCase):
         """ Should have default `body` attribute. """
         instance = chug.model.ChangeLogEntry(**self.test_args)
         self.assertEqual(self.expected_body, instance.body)
+
+
+class ChangeLogEntry_repr_TestCase(
+        ChangeLogEntry_BaseTestCase):
+    """ Test cases for ‘ChangeLogEntry.__repr__’ method. """
+
+    scenarios = [
+        ('default', {
+            'test_args': {},
+            'expected_repr': (
+                "<ChangeLogEntry"
+                " release_date: 'UNKNOWN'"
+                " version: 'UNKNOWN'"
+                " maintainer: None"
+                " body: None"
+                ">"),
+        }),
+        ('simple', {
+            'test_args': {'body': "Foo bar baz."},
+            'expected_repr': (
+                "<ChangeLogEntry"
+                " release_date: 'UNKNOWN'"
+                " version: 'UNKNOWN'"
+                " maintainer: None"
+                " body: 'Foo bar baz.'"
+                ">"),
+        }),
+        ('body-too-long', {
+            'test_args': {
+                'body': textwrap.dedent("""\
+                    Aenean non elementum arcu. Sed mattis, quam eu interdum
+                    convallis, augue velit dignissim arcu, sed luctus mi velit
+                    in nisi.
+                    """),
+            },
+            'expected_repr': (
+                "<ChangeLogEntry"
+                " release_date: 'UNKNOWN'"
+                " version: 'UNKNOWN'"
+                " maintainer: None"
+                " body: 'Aenean non elementum [...]'"
+                ">"),
+        }),
+    ]
+
+    def test_has_expected_repr(self):
+        """ Should have expected programmer representation. """
+        instance = chug.model.ChangeLogEntry(**self.test_args)
+        result = repr(instance)
+        self.assertEqual(self.expected_repr, result)
 
 
 class ChangeLogEntry_eq_TestCase(
