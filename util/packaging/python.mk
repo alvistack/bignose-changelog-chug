@@ -24,6 +24,7 @@ PYTHON_PIP_INSTALL_OPTS ?= --no-input
 PIP_TEST_DEPENDENCIES = .[test]
 PIP_DEVEL_DEPENDENCIES = .[devel]
 PIP_BUILD_DEPENDENCIES = .[build]
+PIP_PUBLISH_DEPENDENCIES = .[publish]
 
 GENERATED_FILES += $(shell find $(CURDIR)/ -type d -name '*.egg-info')
 GENERATED_FILES += $(shell find $(CURDIR)/ -type d -name '.eggs')
@@ -68,6 +69,17 @@ pip-confirm-build-dependencies-installed:
 pip-install-build-dependencies:
 	$(PYTHON_PIP_INSTALL) ${PYTHON_PIP_INSTALL_OPTS} \
 		--editable ${PIP_BUILD_DEPENDENCIES}
+
+
+.PHONY: pip-confirm-publish-dependencies-installed
+pip-confirm-publish-dependencies-installed:
+	@$(call exit_with_error_if_packages_not_installed, \
+		${PIP_PUBLISH_DEPENDENCIES})
+
+.PHONY: pip-install-publish-dependencies
+pip-install-publish-dependencies:
+	$(PYTHON_PIP_INSTALL) ${PYTHON_PIP_INSTALL_OPTS} \
+		--editable ${PIP_PUBLISH_DEPENDENCIES}
 
 
 .PHONY: python-build

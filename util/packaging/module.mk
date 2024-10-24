@@ -13,6 +13,7 @@ DISTRIBUTION_DIR ?= $(CURDIR)/dist
 
 
 include ${MAKE_PACKAGING_MODULE_DIR}/python.mk
+include ${MAKE_PACKAGING_MODULE_DIR}/twine.mk
 
 
 # Copyright © 2008–2024 Ben Finney <ben+python@benfinney.id.au>

@@ -125,6 +125,16 @@ build = [
 
     ]
 
+publish = [
+
+    "changelog-chug[build]",
+
+    # Collection of utilities for publishing packages on PyPI.
+    # Documentation: <URL:https://twine.readthedocs.io/>.
+    "twine",
+
+    ]
+
 [project.urls]
 "Home Page" = "https://git.sr.ht/~bignose/changelog-chug"
 "Change Log" = """
