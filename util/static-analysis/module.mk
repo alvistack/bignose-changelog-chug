@@ -18,6 +18,7 @@ TEST_PYMCCABE_OPTS ?= --min ${TEST_PYMCCABE_MIN}
 TEST_PYCODESTYLE_OPTS ?=
 
 TEST_RUFF_CHECK_OPTS ?=
+RUFF_CACHE_DIR ?= $(CURDIR)/.ruff_cache
 
 TEST_ISORT_OPTS ?= --check-only --diff
 
@@ -58,6 +59,8 @@ test-ruff:
 		${CODE_PACKAGE_DIRS}
 
 static-analysis: test-pymccabe test-pycodestyle test-ruff
+
+GENERATED_FILES += ${RUFF_CACHE_DIR}
 
 
 .PHONY: test-isort
