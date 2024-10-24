@@ -19,10 +19,55 @@ PACKAGING_SETUP_MODULE_FILE := $(CURDIR)/${SETUPTOOLS_CONFIG_MODULE}.py
 
 CODE_MODULES += ${PACKAGING_SETUP_MODULE_FILE}
 
+PYTHON_PIP_INSTALL := $(PYTHON) -m pip install
+PYTHON_PIP_INSTALL_OPTS ?= --no-input
+PIP_TEST_DEPENDENCIES = .[test]
+PIP_DEVEL_DEPENDENCIES = .[devel]
+PIP_BUILD_DEPENDENCIES = .[build]
+
 GENERATED_FILES += $(shell find $(CURDIR)/ -type d -name '*.egg-info')
 GENERATED_FILES += $(shell find $(CURDIR)/ -type d -name '.eggs')
 GENERATED_FILES += $(shell find $(CURDIR)/ -type d -name '__pycache__')
 GENERATED_FILES += $(shell find $(CURDIR)/ -type f -name '*.pyc')
+
+
+define exit_with_error_if_packages_not_installed =
+	$(PYTHON_PIP_INSTALL) --dry-run --no-index --no-build-isolation \
+		--editable ${1}
+endef
+
+
+.PHONY: pip-confirm-devel-dependencies-installed
+pip-confirm-devel-dependencies-installed:
+	@$(call exit_with_error_if_packages_not_installed, \
+		${PIP_DEVEL_DEPENDENCIES})
+
+.PHONY: pip-install-devel-dependencies
+pip-install-devel-dependencies:
+	$(PYTHON_PIP_INSTALL) ${PYTHON_PIP_INSTALL_OPTS} \
+		--editable ${PIP_DEVEL_DEPENDENCIES}
+
+
+.PHONY: pip-confirm-test-dependencies-installed
+pip-confirm-test-dependencies-installed:
+	@$(call exit_with_error_if_packages_not_installed, \
+		${PIP_TEST_DEPENDENCIES})
+
+.PHONY: pip-install-test-dependencies
+pip-install-test-dependencies:
+	$(PYTHON_PIP_INSTALL) ${PYTHON_PIP_INSTALL_OPTS} \
+		--editable ${PIP_TEST_DEPENDENCIES}
+
+
+.PHONY: pip-confirm-build-dependencies-installed
+pip-confirm-build-dependencies-installed:
+	@$(call exit_with_error_if_packages_not_installed, \
+		${PIP_BUILD_DEPENDENCIES})
+
+.PHONY: pip-install-build-dependencies
+pip-install-build-dependencies:
+	$(PYTHON_PIP_INSTALL) ${PYTHON_PIP_INSTALL_OPTS} \
+		--editable ${PIP_BUILD_DEPENDENCIES}
 
 
 .PHONY: python-build

@@ -32,6 +32,7 @@ TEST_COVERAGE_HTML_OPTS ?= --data-file ${COVERAGE_FILE}\
 test: test-unittest
 
 .PHONY: test-unittest
+test-unittest: pip-confirm-build-dependencies-installed
 test-unittest:
 	$(PYTHON) -m unittest ${TEST_UNITTEST_OPTS}
 
@@ -40,6 +41,7 @@ test-unittest:
 test-coverage: test-coverage-run test-coverage-html test-coverage-report
 
 .PHONY: test-coverage-run
+test-coverage-run: pip-confirm-build-dependencies-installed
 test-coverage-run: ${COVERAGE_FILE}
 
 ${COVERAGE_FILE}: ${CODE_MODULES}
