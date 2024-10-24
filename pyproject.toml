@@ -54,6 +54,7 @@ authors = [
 dynamic = [
     "description",
     "version",
+    "maintainers",
     ]
 
 [project.optional-dependencies]
