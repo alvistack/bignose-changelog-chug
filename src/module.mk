@@ -9,12 +9,8 @@
 
 MAKE_SRC_MODULE_DIR ::= $(CURDIR)/src
 
-PYTHON := python3
-
 CODE_PACKAGE_DIRS += ${MAKE_SRC_MODULE_DIR}
 CODE_MODULES += $(shell find "${MAKE_SRC_MODULE_DIR}"/ -type f -name '*.py')
-
-GENERATED_FILES += ${MAKE_SRC_MODULE_DIR}/*.egg-info
 
 
 # Copyright © 2008–2024 Ben Finney <ben+python@benfinney.id.au>

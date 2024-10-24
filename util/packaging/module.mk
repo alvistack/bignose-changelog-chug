@@ -9,15 +9,10 @@
 
 MAKE_PACKAGING_MODULE_DIR := $(CURDIR)/util/packaging
 
-PYTHON_BUILD_OPTS ?=
+DISTRIBUTION_DIR ?= $(CURDIR)/dist
 
 
-build: python-build
-
-
-.PHONY: python-build
-python-build:
-	$(PYTHON) -m build
+include ${MAKE_PACKAGING_MODULE_DIR}/python.mk
 
 
 # Copyright © 2008–2024 Ben Finney <ben+python@benfinney.id.au>
