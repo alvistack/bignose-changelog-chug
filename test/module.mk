@@ -29,7 +29,6 @@ TEST_COVERAGE_HTML_OPTS ?= --data-file ${COVERAGE_FILE}\
 	--directory ${coverage_html_report_dir}/
 
 
-.PHONY: test
 test: test-unittest
 
 .PHONY: test-unittest

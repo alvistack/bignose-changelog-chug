@@ -44,6 +44,10 @@ clean:
 check:
 
 
+.PHONY: test
+test:
+
+
 .PHONY: build
 build:
 
